@@ -112,7 +112,7 @@ class ResponseTest extends PHPUnit_Framework_TestCase
     }
 
     public function testSend(){
-        $this->object->setStatus(200);
+        $this->object->setStatus(DHP\components\response\Response::HTTP_STATUS_OK);
         $this->object->setBody("All is well");
         $this->assertEquals(array("HTTP/1.1 200 OK"=>200),$this->object->getHeaders());
         $this->object->send();

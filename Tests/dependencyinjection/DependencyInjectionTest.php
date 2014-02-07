@@ -1,0 +1,68 @@
+<?php
+/**
+ *
+ * Created by: Henrik Pejer, mr@henrikpejer.com
+ * Date: 2014-02-07 15:07
+ *
+ */
+use DHP\components\dependencyinjection\DependencyInjection;
+use DHP\components\dependencyinjection\Proxy;
+
+class DependencyInjectionTest extends \PHPUnit_Framework_TestCase {
+
+    /** @var  DHP\components\dependencyinjection\DependencyInjection */
+    private $object;
+
+    public function setUp(){
+        $this->object = new DHP\components\dependencyinjection\DependencyInjection();
+    }
+
+    /**
+     * @__expectedException \InvalidArgumentException
+     */
+    public function testSetValue(){
+        $this->object->set('Henrik');
+        $this->assertEquals('Henrik',$this->object->get('Henrik'));
+
+        $this->assertNull($this->object->get('Bengt'));
+
+        $value = array('Test'=>'We get the same array');
+
+        $this->object->set('SameArray',$value);
+        $this->assertEquals($value,$this->object->get('SameArray'));
+
+        $this->object->set('stdClass');
+        $d = new stdClass();
+        $this->assertEquals($d,$this->object->get('stdClass'));
+        $this->assertEquals(spl_object_hash($this->object->get('stdClass')),spl_object_hash($this->object->get('stdClass')));
+
+        $this->object->set('TestingSettingObject',$this->object->get('stdClass'));
+        $this->assertEquals(spl_object_hash($this->object->get('TestingSettingObject')),spl_object_hash($this->object->get('stdClass')));
+
+        $o = $this->object->set('Alias','DHP\components\dependencyinjection\Proxy')->setArguments(array('Testing'))->addMethodCall('FakeMethod',array("args","one","by","one"));
+        $assertEqual = array(
+          'class' => 'DHP\components\dependencyinjection\Proxy',
+          'args' => array(
+            'Testing'
+          ),
+          'methods'=>array(
+            (object)array(
+              'method'=>"FakeMethod",
+              'args' => array("args","one","by","one")
+
+            )
+          )
+        );
+        $this->assertEquals($assertEqual,$o->get());
+
+        $this->object->set('error','DHP\components\dependencyinjection\Proxy');
+        # $this->assertNull($this->object->get('error'));
+    }
+
+    public function testClassInstatiation()
+    {
+        eval('class Hepp{function __construct($Small){$this->p = $Small;}}');
+        $this->object->set('Small','DHP\components\dependencyinjection\Proxy');
+        $this->assertInstanceOf('DHP\components\dependencyinjection\Proxy',$this->object->get('Hepp')->p);
+    }
+}

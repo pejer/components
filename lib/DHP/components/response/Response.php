@@ -62,6 +62,10 @@ class Response
       505 => "HTTP Version not supported"
     );
 
+    const HTTP_STATUS_OK = 200;
+    const HTTP_STATUS_NOT_FOUND = 404;
+    const HTTP_STATUS_SERVER_ERROR = 500;
+
     /** @var array header store */
     private $headers = array();
 
