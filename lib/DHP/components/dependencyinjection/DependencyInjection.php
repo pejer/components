@@ -7,6 +7,13 @@ namespace DHP\components\dependencyinjection;
  * Date: 2014-02-07 14:58
  *
  */
+
+/**
+ * Class DependencyInjection
+ * @package DHP\components\dependencyinjection
+ *
+ * A dependency bucket
+ */
 class DependencyInjection
 {
 
@@ -30,7 +37,7 @@ class DependencyInjection
      * @param null   $value
      * @param string $bucket
      *
-     * @return mixed
+     * @return \DHP\components\dependencyinjection\Proxy|mixed
      */
     public function set($name, $value = null, $bucket = self::STORE_STANDARD_BUCKET)
     {
@@ -62,12 +69,10 @@ class DependencyInjection
     public function get($name, $bucket = self::STORE_STANDARD_BUCKET)
     {
         switch(true){
-            case (
-              isset($this->store->{$bucket}->{$name})
-              && is_a($this->store->{$bucket}->{$name}, 'DHP\components\dependencyinjection\Proxy')
-            ):
+            case (isset($this->store->{$bucket}->{$name}) &&
+                  is_a($this->store->{$bucket}->{$name}, 'DHP\components\dependencyinjection\Proxy')):
                 $instValues = $this->store->{$bucket}->{$name}->get();
-                $ret = $this->instantiateObject($instValues['class'], $instValues['args'], $bucket);
+                $ret        = $this->instantiateObject($instValues['class'], $instValues['args'], $bucket);
                 $this->set($name, $ret, $bucket);
                 break;
             case isset($this->store->{$bucket}->{$name}):
@@ -90,6 +95,7 @@ class DependencyInjection
      * @param array  $argsForObject
      * @param string $bucket
      *
+     * @throws \RuntimeException
      * @return null|object
      */
     private function instantiateObject($class, array $argsForObject = array(), $bucket = self::STORE_STANDARD_BUCKET)
@@ -97,7 +103,9 @@ class DependencyInjection
         $constructorArguments = self::classConstructorArguments($class);
         $classReflector       = new \ReflectionClass($class);
         if ($classReflector->isInterface() || $classReflector->isAbstract()) {
-            return null;
+            throw new \RuntimeException(
+                "Trying to instantiate an interface or abstract class directly. Class was \"{$class}\"."
+            );
         }
         $args        = array();
         $argsNotUsed = array_values($argsForObject);
@@ -172,6 +180,7 @@ class DependencyInjection
     private function getConstructorArguments($constructorArguments, $argsForObject, $bucket)
     {
         $args = array();
+        $arg = null;
         foreach ($constructorArguments as $key => $constructorArgument) {
             # get a value, if possible...
             switch (true) {
@@ -196,5 +205,4 @@ class DependencyInjection
         }
         return $args;
     }
-
 }

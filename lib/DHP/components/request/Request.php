@@ -8,6 +8,23 @@ namespace DHP\components\request;
  *
  */
 
+/**
+ * Class Request
+ *
+ * Wrapps values and variables in a requests
+ *
+ * @package DHP\components\request
+ *
+ * @property-read string method
+ * @property-read string uri
+ * @property-read string body
+ * @property-read array  post
+ * @property-read array  get
+ * @property-read array  files
+ * @property-read array  headers
+ * @property-read array  variables
+
+ */
 class Request
 {
     private $requestMethod;
@@ -38,7 +55,7 @@ class Request
         $headers = array()
     ) {
         $this->requestMethod  = $method;
-        $this->requestUri     = $uri;
+        $this->requestUri     = $this->cleanUri($uri);
         $this->requestPost    = $post;
         $this->requestGet     = $get;
         $this->requestFiles   = $files;
@@ -48,89 +65,41 @@ class Request
     }
 
     /**
-     * Returns the merged GET and POST variables.
-     *
-     * Please note that if GET and POST share the same key name, then POST will overwrite
-     * the GET value.
-     *
-     * Example:
-     * $_GET['something'] = 1;
-     * $_POST['something'] = 2;
-     *
-     * $this->variables() will return array('something' => 2);
-     *
-     * @return array
+     * @param $name
+     * @return array|null|String
      */
-    public function variables()
+    public function __get($name)
     {
-        return $this->requestVars;
+        $return = null;
+        switch (strtolower($name)) {
+            case 'get':
+                $return = $this->requestGet;
+                break;
+            case 'post':
+                $return = $this->requestPost;
+                break;
+            case 'files':
+                $return = $this->requestFiles;
+                break;
+            case 'headers':
+                $return = $this->requestHeaders;
+                break;
+            case 'uri':
+                $return = $this->requestUri;
+                break;
+            case 'body':
+                $return = $this->requestBody;
+                break;
+            case 'method':
+                $return = $this->requestMethod;
+                break;
+            case 'variables':
+                $return = $this->requestVars;
+                break;
+        }
+        return $return;
     }
 
-    /**
-     * Returns the files array
-     * @return array
-     */
-    public function files()
-    {
-        return $this->requestFiles;
-    }
-
-    /**
-     * Returns the http-headers
-     * @return array
-     */
-    public function headers()
-    {
-        return $this->requestHeaders;
-    }
-    /**
-     * Returns $_GET values
-     *
-     * @return array
-     */
-    public function get()
-    {
-        return $this->requestGet;
-    }
-
-    /**
-     * Returns $_POST - values
-     *
-     * @return array
-     */
-    public function post()
-    {
-        return $this->requestPost;
-    }
-    /**
-     * Returns the URI
-     *
-     * @return null|String
-     */
-    public function uri()
-    {
-        return $this->requestUri;
-    }
-
-    /**
-     * Returns the method of the request
-     *
-     * @return string
-     */
-    public function method()
-    {
-        return $this->requestMethod;
-    }
-
-    /**
-     * returns the body of the request
-     *
-     * @return null|String
-     */
-    public function body()
-    {
-        return $this->requestBody;
-    }
 
     /**
      * This uses whatever it can find from the environment and tries to set
@@ -142,7 +111,7 @@ class Request
     public function setupWithEnvironment()
     {
         if (isset( $_SERVER['REQUEST_URI'] )) {
-            $this->requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $this->requestUri = $this->cleanUri(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         }
         if (isset( $_SERVER['REQUEST_METHOD'] )) {
             $this->requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -171,5 +140,17 @@ class Request
     private function makeVars()
     {
         $this->requestVars = array_merge($this->requestGet, $this->requestPost);
+    }
+
+    /**
+     * We trim of spaces and slashes from the uri so we never have beginning or
+     * trailing slashes
+     *
+     * @param string $uri
+     * @return string
+     */
+    private function cleanUri($uri)
+    {
+        return trim($uri, ' /');
     }
 }

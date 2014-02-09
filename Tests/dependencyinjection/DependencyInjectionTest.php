@@ -59,10 +59,43 @@ class DependencyInjectionTest extends \PHPUnit_Framework_TestCase {
         # $this->assertNull($this->object->get('error'));
     }
 
+    /**
+     * @expectedException \ReflectionException
+     */
     public function testClassInstatiation()
     {
-        eval('class Hepp{function __construct($Small){$this->p = $Small;}}');
+        eval('class Hepp{function __construct($Small = "Default value"){$this->p = $Small;}}');
+        eval('class Hepp23{function __construct(\Hepp $initvar){$this->p = $initvar;}}');
+        eval('class Hepp234{function __construct(\Countable $initvar){$this->p = $initvar;}}');
+        eval('class Hepp123{function __construct(\HeppDoesNotExist $initvar){$this->p = $initvar;}}');
+
+        $o = $this->object->set('Hepp2','\Hepp')->setArguments(array('Small'=>"Bananer"));
+        $this->assertEquals('Bananer',$this->object->get('Hepp2')->p);
+
+        $o = $this->object->set('Hepp2','\Hepp')->setArguments(array("Bapple"));
+        $this->assertEquals('Bapple',$this->object->get('Hepp2')->p);
+
+        $o = $this->object->set('Hepp2','\Hepp');
+        $this->assertEquals('Default value',$this->object->get('Hepp2')->p);
+
         $this->object->set('Small','DHP\components\dependencyinjection\Proxy');
         $this->assertInstanceOf('DHP\components\dependencyinjection\Proxy',$this->object->get('Hepp')->p);
+
+        $this->assertNull($this->object->get('\HeppInt'));
+
+        $this->assertNull($this->object->get('\ClassDoesNotExist'));
+        $this->assertNull($this->object->get('\Hepp234'));
+
+        $this->assertInstanceOf('Hepp',$this->object->get('Hepp23')->p);
+        $this->assertNull($this->object->get('Hepp123'));
+    }
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Trying to instantiate an interface or abstract class directly. Class was "\Hepp2345"
+     */
+
+    public function testLoadingAbstractClass(){
+        eval('abstract class Hepp2345{function __construct(\Hepp $initvar){$this->p = $initvar;}}');
+        $this->assertNull($this->object->get('\Hepp2345'));
     }
 }

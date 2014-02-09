@@ -7,7 +7,16 @@ namespace DHP\components\dependencyinjection;
  * Date: 2014-02-07 15:16
  *
  */
-class Proxy {
+
+/**
+ * Class Proxy
+ * @package DHP\components\dependencyinjection
+ *
+ * A dependency injection proxy - will only be instantiated when
+ * DI needs the object
+ */
+class Proxy
+{
     private $classToInstantiate = null;
     private $argumentsToConstructor = array();
     private $methodCalls = array();

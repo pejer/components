@@ -15,7 +15,11 @@ function autoload($className)
         $fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
     }
     $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-    include $fileName;
+    $includeFileName = stream_resolve_include_path($fileName);
+    if(file_exists($includeFileName)){
+        include_once $includeFileName;
+    }
+
 }
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__.'/../lib');
 require_once __DIR__.'/../vendor/autoload.php';

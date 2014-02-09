@@ -152,11 +152,10 @@ class Response
             # if data is object/array OR $this->body is object/array = they must match that...
             $dataType = gettype($data);
             $bodyType = gettype($this->body);
-            switch (true) {
-                case in_array($dataType, array('object', 'array')) && !in_array($bodyType, array('object', 'array')):
-                case !in_array($dataType, array('object', 'array')) && in_array($bodyType, array('object', 'array')):
-                    throw new \RuntimeException("To be able to append data - data must be of same type");
-                    break;
+            if ((in_array($dataType, array('object', 'array')) && !in_array($bodyType, array('object', 'array'))) ||
+                (!in_array($dataType, array('object', 'array')) && in_array($bodyType, array('object', 'array')))
+            ) {
+                throw new \RuntimeException("To be able to append data - data must be of same type");
             }
         }
         if (in_array($dataType, array('object', 'array'))) {
@@ -192,7 +191,8 @@ class Response
      * Sends headers and body
      * @return $this
      */
-    public function send(){
+    public function send()
+    {
         $this->sendHeaders();
         $this->sendBody();
         return $this;
