@@ -14,6 +14,8 @@ namespace DHP\components\response;
  *
  * This class will handle the response that is supposed to be sent
  * back to the client.
+ *
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class Response
 {
@@ -85,6 +87,8 @@ class Response
      *
      * @throws \RuntimeException
      * @return bool
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setHeader($value, $replace = true, $httpStatusCode = null)
     {
@@ -143,20 +147,21 @@ class Response
      *
      * @return $this
      * @throws \RuntimeException when data-types missmatch
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function appendBody($data)
     {
         if (empty( $this->body )) {
             return $this->setBody($data);
-        } else {
-            # if data is object/array OR $this->body is object/array = they must match that...
-            $dataType = gettype($data);
-            $bodyType = gettype($this->body);
-            if ((in_array($dataType, array('object', 'array')) && !in_array($bodyType, array('object', 'array'))) ||
-                (!in_array($dataType, array('object', 'array')) && in_array($bodyType, array('object', 'array')))
-            ) {
-                throw new \RuntimeException("To be able to append data - data must be of same type");
-            }
+        }
+        # if data is object/array OR $this->body is object/array = they must match that...
+        $dataType = gettype($data);
+        $bodyType = gettype($this->body);
+        if ((in_array($dataType, array('object', 'array')) && !in_array($bodyType, array('object', 'array'))) ||
+            (!in_array($dataType, array('object', 'array')) && in_array($bodyType, array('object', 'array')))
+        ) {
+            throw new \RuntimeException("To be able to append data - data must be of same type");
         }
         if (in_array($dataType, array('object', 'array'))) {
             $this->body = (array) $this->body + (array) $data;
@@ -233,9 +238,8 @@ class Response
         $headerData = explode(':', $value, 2);
         if (count($headerData) == 1) {
             return $headerData[0];
-        } else {
-            return sprintf('%s: %s', $this->formatHeaderName($headerData[0]), trim($headerData[1]));
         }
+        return sprintf('%s: %s', $this->formatHeaderName($headerData[0]), trim($headerData[1]));
     }
 
     /**

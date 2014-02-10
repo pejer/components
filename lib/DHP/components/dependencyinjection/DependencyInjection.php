@@ -12,6 +12,7 @@ namespace DHP\components\dependencyinjection;
  * Class DependencyInjection
  * @package DHP\components\dependencyinjection
  *
+ * @SuppressWarnings(PHPMD.StaticAccess)
  * A dependency bucket
  */
 class DependencyInjection

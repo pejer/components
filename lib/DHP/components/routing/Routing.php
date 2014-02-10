@@ -66,6 +66,8 @@ class Routing
      * @param callable|array $closure The callback or array for calling a method on an object
      * @param string|null    $alias alias to use for this route
      * @throws \RuntimeException
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function add($httpMethod, $uri, $closure, $alias = null)
     {
@@ -133,6 +135,8 @@ class Routing
     /**
      * @param      $controllerClass
      * @param null $uriNamespace
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function makeRoutesForClass($controllerClass, $uriNamespace = null)
     {
