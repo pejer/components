@@ -42,6 +42,7 @@ class DependencyInjection
      */
     public function set($name, $value = null, $bucket = self::STORE_STANDARD_BUCKET)
     {
+        $name = $this->cleanName($name);
         if ($value === null) {
             $value = $name;
         }
@@ -49,11 +50,17 @@ class DependencyInjection
             $this->store->{$bucket} = new \stdClass();
         }
         switch (true){
-            case (is_string($value) && class_exists($value, false)):
+            case is_string($value) && isset($this->store->{$bucket}->{$value}):
+                $this->store->{$bucket}->{$name} = $this->get($value, $bucket);
+                break;
+            case (is_string($value) && class_exists($value, true)):
                 $this->store->{$bucket}->{$name} = new Proxy($value);
                 break;
             default:
                 $this->store->{$bucket}->{$name} = $value;
+                if (is_object($value)) {
+                    $this->store->{$bucket}->{get_class($value)} = & $this->store->{$bucket}->{$name};
+                }
                 break;
         }
         return $this->store->{$bucket}->$name;
@@ -69,19 +76,29 @@ class DependencyInjection
      */
     public function get($name, $bucket = self::STORE_STANDARD_BUCKET)
     {
+        $name = $this->cleanName($name);
         switch(true){
             case (isset($this->store->{$bucket}->{$name}) &&
                   is_a($this->store->{$bucket}->{$name}, 'DHP\components\dependencyinjection\Proxy')):
                 $instValues = $this->store->{$bucket}->{$name}->get();
                 $ret        = $this->instantiateObject($instValues['class'], $instValues['args'], $bucket);
-                $this->set($name, $ret, $bucket);
+                foreach ($instValues['methods'] as $methodAndArgs) {
+                    call_user_func_array(
+                        array(
+                            $ret,
+                            $methodAndArgs->method
+                        ),
+                        $methodAndArgs->args
+                    );
+                }
+                $this->store->{$bucket}->{$name} = &$ret;
                 break;
             case isset($this->store->{$bucket}->{$name}):
                 $ret = $this->store->{$bucket}->{$name};
                 break;
-            case (is_string($name) && class_exists($name, false)):
-                $ret = $this->instantiateObject($name, array(), $bucket);
-                $this->set($name, $ret, $bucket);
+            case (is_string($name) && class_exists($name, true)):
+                $this->set($name, null, $bucket);
+                $ret = $this->get($name, $bucket);
                 break;
             default:
                 $ret = null;
@@ -184,7 +201,7 @@ class DependencyInjection
         $arg = null;
         foreach ($constructorArguments as $key => $constructorArgument) {
             # get a value, if possible...
-            switch (true) {
+            switch (true) { # todo - there is something funky here with regards to typed parameters - the get initiated again eventhough they already exist!
                 case (!empty($constructorArgument['class']) &&
                       ($arg = $this->get($constructorArgument['class'], $bucket)) !== null):
                 case (!empty($constructorArgument['name']) &&
@@ -205,5 +222,13 @@ class DependencyInjection
             }
         }
         return $args;
+    }
+
+    private function cleanName($name)
+    {
+        if (strpos($name, '\\')) {
+            $name = '\\' . trim($name, '\\ ');
+        }
+        return $name;
     }
 }

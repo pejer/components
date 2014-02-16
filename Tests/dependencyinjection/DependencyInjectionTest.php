@@ -30,11 +30,15 @@ class DependencyInjectionTest extends \PHPUnit_Framework_TestCase {
 
         $this->object->set('SameArray',$value);
         $this->assertEquals($value,$this->object->get('SameArray'));
-
         $this->object->set('stdClass');
         $d = new stdClass();
         $this->assertEquals($d,$this->object->get('stdClass'));
         $this->assertEquals(spl_object_hash($this->object->get('stdClass')),spl_object_hash($this->object->get('stdClass')));
+
+        $this->object->set('SomeAlias','stdClass');
+        $checkAgainst = $this->object->get('SomeAlias');
+        $this->assertEquals(spl_object_hash($checkAgainst),spl_object_hash($this->object->get('SomeAlias')));
+
 
         $this->object->set('TestingSettingObject',$this->object->get('stdClass'));
         $this->assertEquals(spl_object_hash($this->object->get('TestingSettingObject')),spl_object_hash($this->object->get('stdClass')));
@@ -64,14 +68,17 @@ class DependencyInjectionTest extends \PHPUnit_Framework_TestCase {
      */
     public function testClassInstatiation()
     {
-        eval('class Hepp{function __construct($Small = "Default value"){$this->p = $Small;}}');
+        global $testValue;
+        $testValue = null;
+        eval('class Hepp{function __construct($Small = "Default value"){$this->p = $Small;} function autoCalled(){global $testValue;$testValue = "called";}}');
         eval('class Hepp23{function __construct(\Hepp $initvar){$this->p = $initvar;}}');
         eval('class Hepp234{function __construct(\Countable $initvar){$this->p = $initvar;}}');
         eval('class Hepp123{function __construct(\HeppDoesNotExist $initvar){$this->p = $initvar;}}');
 
-        $o = $this->object->set('Hepp2','\Hepp')->setArguments(array('Small'=>"Bananer"));
+        $this->assertNull($testValue);
+        $o = $this->object->set('Hepp2','\Hepp')->setArguments(array('Small'=>"Bananer"))->addMethodCall('autoCalled');
         $this->assertEquals('Bananer',$this->object->get('Hepp2')->p);
-
+        $this->assertEquals('called',$testValue);
         $o = $this->object->set('Hepp2','\Hepp')->setArguments(array("Bapple"));
         $this->assertEquals('Bapple',$this->object->get('Hepp2')->p);
 
