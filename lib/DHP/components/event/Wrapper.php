@@ -26,9 +26,11 @@ class Wrapper
      * create the mocking class php and eval it into the current running environment
      *
      * @static
-     * @param bool   $partial - Should test double be a partial or a full mock
+     *
      * @param string $mockedClass - The name of the class (or interface) to create a mock of
+     *
      * @throws \RuntimeException
+     * @internal param bool $partial - Should test double be a partial or a full mock
      * @return string The name of the mocker class
      *
      * @SuppressWarnings(PHPMD.EvalExpression)
@@ -36,7 +38,7 @@ class Wrapper
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public static function wrap($partial, $mockedClass)
+    public static function wrap($mockedClass)
     {
         // Bail if we were passed a classname that doesn't exist
         if (!class_exists($mockedClass) && !interface_exists($mockedClass)) {
@@ -157,11 +159,11 @@ EOT;
                 $args = '$args = func_get_args();';
                 $triggerParams = '';
                 preg_match_all("#(\\$[^=]+)#", $defparams, $matches);
-                if(count($matches[1]) > 0){
+                if (count($matches[1]) > 0) {
                     $triggerParams = ', &'.implode(', &', $matches[1]);
                 }
                 if ($method->name == '__construct') {
-                    $defparams = '\DHP\components\event\Event $__________event,'.$defparams;
+                    $defparams = '\DHP\components\event\Event $__________event'.($defparams==''?'':','.$defparams);
                     $args .= '$this->__________event = $__________event;array_shift($args);';
 
                 }

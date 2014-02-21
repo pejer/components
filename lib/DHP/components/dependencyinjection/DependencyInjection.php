@@ -59,6 +59,7 @@ class DependencyInjection
             default:
                 $this->store->{$bucket}->{$name} = $value;
                 if (is_object($value)) {
+                    /** @noinspection PhpParamsInspection */
                     $this->store->{$bucket}->{get_class($value)} = & $this->store->{$bucket}->{$name};
                 }
                 break;
@@ -96,7 +97,7 @@ class DependencyInjection
             case isset($this->store->{$bucket}->{$name}):
                 $ret = $this->store->{$bucket}->{$name};
                 break;
-            case (is_string($name) && class_exists($name, true)):
+            case ( is_string($name) && class_exists($name, true) ):
                 $this->set($name, null, $bucket);
                 $ret = $this->get($name, $bucket);
                 break;
@@ -201,7 +202,7 @@ class DependencyInjection
         $arg = null;
         foreach ($constructorArguments as $key => $constructorArgument) {
             # get a value, if possible...
-            switch (true) { # todo - there is something funky here with regards to typed parameters - the get initiated again eventhough they already exist!
+            switch (true) {
                 case (!empty($constructorArgument['class']) &&
                       ($arg = $this->get($constructorArgument['class'], $bucket)) !== null):
                 case (!empty($constructorArgument['name']) &&
@@ -224,9 +225,19 @@ class DependencyInjection
         return $args;
     }
 
+    /**
+     * This method cleans key names, normalizing keys that most likely are classes.
+     *
+     * @param string $name key name to check and clean
+     *
+     * @return string
+     */
     private function cleanName($name)
     {
-        if (strpos($name, '\\')) {
+        #if (strpos($name, '\\')) {
+        #    $name = '\\' . trim($name, '\\ ');
+        #}
+        if (class_exists($name, true) || class_exists(trim($name, '\\ '), true)) {
             $name = '\\' . trim($name, '\\ ');
         }
         return $name;

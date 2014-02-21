@@ -94,7 +94,12 @@ class DependencyInjectionTest extends \PHPUnit_Framework_TestCase {
         $this->assertNull($this->object->get('\Hepp234'));
 
         $this->assertInstanceOf('Hepp',$this->object->get('Hepp23')->p);
+        # make sure omitting \ gives correct anyways
+        $this->assertEquals(spl_object_hash($this->object->get('Hepp23')),spl_object_hash($this->object->get('\Hepp23')));
+        $this->assertEquals(spl_object_hash($this->object->get('Hepp23\\')),spl_object_hash($this->object->get('\Hepp23')));
         $this->assertNull($this->object->get('Hepp123'));
+
+        # todo - figure out how to test from different namespaces
     }
     /**
      * @expectedException \RuntimeException
