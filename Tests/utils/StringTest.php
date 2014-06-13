@@ -29,8 +29,8 @@ class StringTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('testValue', (string)$this->object->replace('new','test'));
         $this->assertEquals('  testValue',(string)$this->object->pad(11,' ', STR_PAD_LEFT));
         $this->assertEquals('  testtest',(string)$this->object->pregReplace('#Value#','test'));
-        $matches = array();
-        $this->assertTrue($this->object->pregMatch('#(estt)#',$matches));
-        $this->assertEquals(array(), $matches);
+        $matches = null;
+        $this->assertEquals($this->object->pregMatch('#(estt)#',$matches),1);
+        $this->assertEquals(array('estt','estt'), $matches);
     }
 }

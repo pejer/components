@@ -69,7 +69,7 @@ class String
      * @param int        $flags
      * @param int        $offset
      *
-     * @return $this
+     * @return
      */
     public function pregMatch($pattern, &$matches = null, $flags = 0, $offset = 0)
     {
