@@ -58,9 +58,41 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($_FILES, $this->object->files);
         $this->assertEquals(array_merge($_GET, $_POST), $this->object->variables);
 
+        $this->object = new \DHP\components\request\Request();
+        unset($_SERVER['REQUEST_URI']);
+        $_SERVER['argv'] = array(
+            'index.php',
+            'blogging-is-fun'
+        );
+        $this->object->setupWithEnvironment();
+
+        $this->assertEquals('GET', $this->object->method);
+        $this->assertEquals('blogging-is-fun', $this->object->uri);
+        $this->assertEquals($_POST, $this->object->post);
+        $this->assertEquals($_GET, $this->object->get);
+        $this->assertEquals('', $this->object->body);
+        $this->assertEquals($assertHeaders, $this->object->headers);
+        $this->assertEquals($_FILES, $this->object->files);
+        $this->assertEquals(array_merge($_GET, $_POST), $this->object->variables);
+
+        unset($_SERVER['argv'][1]);
+
+        $this->object->setupWithEnvironment();
+
+        $this->assertEquals('GET', $this->object->method);
+        $this->assertEquals('', $this->object->uri);
+        $this->assertEquals($_POST, $this->object->post);
+        $this->assertEquals($_GET, $this->object->get);
+        $this->assertEquals('', $this->object->body);
+        $this->assertEquals($assertHeaders, $this->object->headers);
+        $this->assertEquals($_FILES, $this->object->files);
+        $this->assertEquals(array_merge($_GET, $_POST), $this->object->variables);
+
+
         $_SERVER = $oldServer;
         $_GET    = $oldGet;
         $_POST   = $oldPost;
         $_FILES  = $oldFiles;
     }
+
 }
