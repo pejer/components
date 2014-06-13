@@ -110,7 +110,6 @@ class Request
      */
     public function setupWithEnvironment()
     {
-        $url = '';
         switch (true) {
             case isset( $_SERVER['REQUEST_URI'] ):
                 $url = $_SERVER['REQUEST_URI'];
@@ -118,6 +117,8 @@ class Request
             case isset( $_SERVER['argv'] ) && isset( $_SERVER['argv'][1] ):
                 $url = $_SERVER['argv'][1];
                 break;
+            default:
+                $url = '';
         }
         $this->requestUri = $this->cleanUri(parse_url($url, PHP_URL_PATH));
         if (isset( $_SERVER['REQUEST_METHOD'] )) {
