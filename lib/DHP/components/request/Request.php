@@ -110,9 +110,16 @@ class Request
      */
     public function setupWithEnvironment()
     {
-        if (isset( $_SERVER['REQUEST_URI'] )) {
-            $this->requestUri = $this->cleanUri(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+        $url = '';
+        switch (true) {
+            case isset( $_SERVER['REQUEST_URI'] ):
+                $url = $_SERVER['REQUEST_URI'];
+                break;
+            case isset( $_SERVER['argv'] ) && isset( $_SERVER['argv'][1] ):
+                $url = $_SERVER['argv'][1];
+                break;
         }
+        $this->requestUri = $this->cleanUri(parse_url($url, PHP_URL_PATH));
         if (isset( $_SERVER['REQUEST_METHOD'] )) {
             $this->requestMethod = $_SERVER['REQUEST_METHOD'];
         }
