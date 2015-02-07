@@ -14,12 +14,12 @@ use DHP\components\request\Request;
 use DHP\components\routing\Routing;
 
 /**
- * Class app
+ * Claspp
  *
  * This class is the basis for the app
  * @package DHP\components
  */
-class app
+class App
 {
     public $stopRunningRoutes;
     /**

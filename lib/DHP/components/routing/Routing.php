@@ -48,12 +48,14 @@ class Routing
 
         $matchingRoutes = array();
 
-        foreach ($routesToMatch as $routeUri => $closure) {
-            if (false !== ($routeMatchReturn = $this->matchUriToRoute($uri, $routeUri))) {
-                $matchingRoutes[] = array(
-                    'closure' => $closure,
-                    'route'   => $routeMatchReturn
-                );
+        foreach ($routesToMatch as $routeUri =>$routesArray) {
+            foreach($routesArray as $closure) {
+                if (false !== ($routeMatchReturn = $this->matchUriToRoute($uri, $routeUri))) {
+                    $matchingRoutes[] = array(
+                        'closure' => $closure,
+                        'route'   => $routeMatchReturn
+                    );
+                }
             }
         }
 
@@ -269,10 +271,10 @@ class Routing
     {
         $httpMethod = is_array($httpMethod) ? $httpMethod : array($httpMethod);
         foreach ($httpMethod as $method) {
-            if (isset($this->routes[$method][$uri])) {
-                throw new \RuntimeException("A route for that method and uri already exists");
+            if (!isset($this->routes[$method][$uri])) {
+                $this->routes[$method][$uri] = array();
             }
-            $this->routes[$method][$uri] = $closure;
+            $this->routes[$method][$uri][] = $closure;
             if (isset($alias)) {
                 $this->aliases[$alias] = $uri;
             }

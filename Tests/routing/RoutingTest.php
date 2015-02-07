@@ -75,12 +75,10 @@ class RoutingTest extends \PHPUnit_Framework_TestCase
 
         $matchingRoute = $this->object->match('GET', 'user/2');
         $this->assertNotNull($matchingRoute);
-
         $this->assertEquals("The id of the user is userID", $matchingRoute[0]['closure']($matchingRoute[0]['route'][0]));
     }
 
     /**
-     * @expectedException \RuntimeException
      */
     public function testAddDuplicateRoute()
     {
@@ -88,6 +86,8 @@ class RoutingTest extends \PHPUnit_Framework_TestCase
         });
         $this->object->add('GET', '/blog/:title', function () {
         });
+        $matches = $this->object->match('GET','/blog/the-title-to-match');
+        $this->assertEquals(2,count($matches));
     }
 
     public function testMatching()
