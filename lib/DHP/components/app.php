@@ -14,7 +14,7 @@ use DHP\components\request\Request;
 use DHP\components\routing\Routing;
 
 /**
- * Claspp
+ * Class App
  *
  * This class is the basis for the app
  * @package DHP\components
