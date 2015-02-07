@@ -68,6 +68,9 @@ class app
 
     }
 
+    /**
+     * This will invoke all the middlewares that has been applied
+     */
     private function runMiddleware(){
 
     }
