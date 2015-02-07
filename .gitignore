@@ -4,3 +4,4 @@ vendor
 test_usage
 build
 app
+.DS_Store

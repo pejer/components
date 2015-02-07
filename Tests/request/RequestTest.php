@@ -95,4 +95,12 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $_FILES  = $oldFiles;
     }
 
+    public function testVariables(){
+        $this->assertEquals($this->object->body, null);
+        $this->object->body = 'new body';
+        $this->assertEquals($this->object->body, 'new body');
+        $this->object->requestBody = 'this will not get set';
+        $this->assertEquals($this->object->body, 'new body');
+    }
+
 }

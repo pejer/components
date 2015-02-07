@@ -13,6 +13,8 @@ namespace DHP\components\event;
  *
  * This way, we can inject events into a class... very sneaky indeed.
  *
+ * This is based upon Phockito : https://github.com/hafriedlander/phockito/blob/master/Phockito.php
+ *
  * @package DHP\components\event
  */
 class Wrapper
@@ -30,7 +32,6 @@ class Wrapper
      * @param string $mockedClass - The name of the class (or interface) to create a mock of
      *
      * @throws \RuntimeException
-     * @internal param bool $partial - Should test double be a partial or a full mock
      * @return string The name of the mocker class
      *
      * @SuppressWarnings(PHPMD.EvalExpression)

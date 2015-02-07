@@ -32,5 +32,7 @@ class StringTest extends \PHPUnit_Framework_TestCase {
         $matches = null;
         $this->assertEquals($this->object->pregMatch('#(estt)#',$matches),1);
         $this->assertEquals(array('estt','estt'), $matches);
+        $this->assertEquals($this->object->pregMatchAll('#(estt)#',$matches),1);
+        $this->assertEquals(array(array('estt'),array('estt')), $matches);
     }
 }

@@ -15,6 +15,8 @@ namespace DHP\components\response;
  * This class will handle the response that is supposed to be sent
  * back to the client.
  *
+ * @todo : add possibility to send a file
+ *
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class Response
@@ -22,46 +24,46 @@ class Response
 
     /** @var array List of common status headers */
     private $headerStatusCodes = array(
-      100 => "Continue",
-      101 => "Switching Protocols",
-      200 => "OK",
-      201 => "Created",
-      202 => "Accepted",
-      203 => "Non-Authoritative Information",
-      204 => "No Content",
-      205 => "Reset Content",
-      206 => "Partial Content",
-      300 => "Multiple Choices",
-      301 => "Moved Permanently",
-      302 => "Found",
-      303 => "See Other",
-      304 => "Not Modified",
-      305 => "Use Proxy",
-      307 => "Temporary Redirect",
-      400 => "Bad Request",
-      401 => "Unauthorized",
-      402 => "Payment Required",
-      403 => "Forbidden",
-      404 => "Not Found",
-      405 => "Method Not Allowed",
-      406 => "Not Acceptable",
-      407 => "Proxy Authentication Required",
-      408 => "Request Time-out",
-      409 => "Conflict",
-      410 => "Gone",
-      411 => "Length Required",
-      412 => "Precondition Failed",
-      413 => "Request Entity Too Large",
-      414 => "Request-URI Too Large",
-      415 => "Unsupported Media Type",
-      416 => "Requested range not satisfiable",
-      417 => "Expectation Failed",
-      500 => "Internal Server Error",
-      501 => "Not Implemented",
-      502 => "Bad Gateway",
-      503 => "Service Unavailable",
-      504 => "Gateway Time-out",
-      505 => "HTTP Version not supported"
+        100 => "Continue",
+        101 => "Switching Protocols",
+        200 => "OK",
+        201 => "Created",
+        202 => "Accepted",
+        203 => "Non-Authoritative Information",
+        204 => "No Content",
+        205 => "Reset Content",
+        206 => "Partial Content",
+        300 => "Multiple Choices",
+        301 => "Moved Permanently",
+        302 => "Found",
+        303 => "See Other",
+        304 => "Not Modified",
+        305 => "Use Proxy",
+        307 => "Temporary Redirect",
+        400 => "Bad Request",
+        401 => "Unauthorized",
+        402 => "Payment Required",
+        403 => "Forbidden",
+        404 => "Not Found",
+        405 => "Method Not Allowed",
+        406 => "Not Acceptable",
+        407 => "Proxy Authentication Required",
+        408 => "Request Time-out",
+        409 => "Conflict",
+        410 => "Gone",
+        411 => "Length Required",
+        412 => "Precondition Failed",
+        413 => "Request Entity Too Large",
+        414 => "Request-URI Too Large",
+        415 => "Unsupported Media Type",
+        416 => "Requested range not satisfiable",
+        417 => "Expectation Failed",
+        500 => "Internal Server Error",
+        501 => "Not Implemented",
+        502 => "Bad Gateway",
+        503 => "Service Unavailable",
+        504 => "Gateway Time-out",
+        505 => "HTTP Version not supported"
     );
 
     const HTTP_STATUS_OK = 200;
@@ -81,8 +83,8 @@ class Response
      *
      * This method sets the headers that is to be sent to the client
      *
-     * @param String       $value          header data
-     * @param boolean      $replace        if we should replace a previous header, set to false to NOT replace header
+     * @param String       $value header data
+     * @param boolean      $replace if we should replace a previous header, set to false to NOT replace header
      * @param integer|null $httpStatusCode The int status code for this header
      *
      * @throws \RuntimeException
@@ -96,7 +98,7 @@ class Response
             throw new \RuntimeException("Headers have already been sent");
         }
         $headerData = $this->formatHeaderData($value);
-        if ($replace === false && isset( $this->headers[$headerData] )) {
+        if ($replace === false && isset($this->headers[$headerData])) {
             return $this;
         }
         $this->headers[$headerData] = $httpStatusCode;
@@ -152,7 +154,7 @@ class Response
      */
     public function appendBody($data)
     {
-        if (empty( $this->body )) {
+        if (empty($this->body)) {
             return $this->setBody($data);
         }
         # if data is object/array OR $this->body is object/array = they must match that...
@@ -164,7 +166,7 @@ class Response
             throw new \RuntimeException("To be able to append data - data must be of same type");
         }
         if (in_array($dataType, array('object', 'array'))) {
-            $this->body = (array) $this->body + (array) $data;
+            $this->body = (array)$this->body + (array)$data;
         } else {
             $this->body .= $data;
         }
@@ -206,7 +208,7 @@ class Response
     /**
      * Sets the http-status for the request
      *
-     * @param int         $statusCode    The http status code ie 200, 404, 500 etc
+     * @param int         $statusCode The http status code ie 200, 404, 500 etc
      * @param null|String $statusMessage The message such as OK, Not Found etc, optional
      *
      * @return $this

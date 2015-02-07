@@ -29,12 +29,12 @@ class Constants
      * Initiates the constants object. You can provide the initial values
      * along with a current environment
      *
-     * @param array  $initialValues      initial values, with keys as their names
+     * @param array  $initialValues initial values, with keys as their names
      * @param string $defaultEnvironment name of default environment, if none is provided
      */
     public function __construct(array $initialValues = array(), $defaultEnvironment = null)
     {
-        if (isset( $defaultEnvironment )) {
+        if (isset($defaultEnvironment)) {
             $this->currentEnvironment = $defaultEnvironment;
         }
         $this->values[$this->currentEnvironment] = $initialValues;
@@ -49,7 +49,7 @@ class Constants
      */
     public function setDefaultEnvironment($environment)
     {
-        if (!isset( $this->values[$environment] )) {
+        if (!isset($this->values[$environment])) {
             $this->values[$environment] = array();
         }
         $this->currentEnvironment = $environment;
@@ -67,10 +67,10 @@ class Constants
     public function __get($name)
     {
         switch (true) {
-            case isset( $this->values[$this->currentEnvironment][$name] ):
+            case isset($this->values[$this->currentEnvironment][$name]):
                 return $this->values[$this->currentEnvironment][$name];
                 break;
-            case isset( $this->values[self::DEFAULT_ENVIRONMENT][$name] ):
+            case isset($this->values[self::DEFAULT_ENVIRONMENT][$name]):
                 return $this->values[self::DEFAULT_ENVIRONMENT][$name];
                 break;
         }
@@ -80,14 +80,14 @@ class Constants
     /**
      * Stores the value of the
      *
-     * @param string $name  name of variable
+     * @param string $name name of variable
      * @param mixed  $value the value to be stored
      *
      * @throws \RuntimeException
      */
     public function __set($name, $value)
     {
-        if (isset( $this->values[$this->currentEnvironment][$name] )) {
+        if (isset($this->values[$this->currentEnvironment][$name])) {
             throw new \RuntimeException("Can not update value of existing constant");
         }
         $this->values[$this->currentEnvironment][$name] = $value;
@@ -104,8 +104,8 @@ class Constants
      */
     public function __call($name, $arguments)
     {
-        list( $environment, $value ) = $arguments;
-        if (isset( $this->values[$environment][$name] )) {
+        list($environment, $value) = $arguments;
+        if (isset($this->values[$environment][$name])) {
             throw new \RuntimeException("Can not update value of existing constant");
         }
         $this->values[$environment][$name] = $value;
