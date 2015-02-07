@@ -29,7 +29,7 @@ class Constants
      * Initiates the constants object. You can provide the initial values
      * along with a current environment
      *
-     * @param array  $initialValues initial values, with keys as their names
+     * @param array $initialValues initial values, with keys as their names
      * @param string $defaultEnvironment name of default environment, if none is provided
      */
     public function __construct(array $initialValues = array(), $defaultEnvironment = null)
@@ -81,7 +81,7 @@ class Constants
      * Stores the value of the
      *
      * @param string $name name of variable
-     * @param mixed  $value the value to be stored
+     * @param mixed $value the value to be stored
      *
      * @throws \RuntimeException
      */

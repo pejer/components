@@ -60,22 +60,41 @@ class app
     }
 
     /**
-     * Loads and setups the routing for this app
-     * @param Array $routes
-     */
-    public function loadRoutes(Array $routes)
-    {
-
-    }
-
-    /**
      * Loads the config for the app and initialize it
      *
      * @param array $config
      */
     public function loadAppConfig(Array $config)
     {
+        foreach ($config['controllers'] as $controller) {
+            $controller[1] = isset($controller[1]) ? $controller[1] : null;
+            $this->routing->makeRoutesForClass($controller[0], $controller[1]);
+        }
+        $this->loadRoutes($config['routes']);
+        foreach ($config['middleware'] as $middleware) {
+            $middleware[1] = isset($middleware[1]) ? $middleware[1] : '';
+            $this->apply($middleware);
+        }
+    }
 
+    /**
+     * Loads and setups the routing for this app
+     * @param Array $routes
+     */
+    public function loadRoutes(Array $routes)
+    {
+        foreach ($routes as $route) {
+            if (isset($route['alias'])) {
+                $this->routing->add($route['method'],
+                    $route['uri'],
+                    $route['callable'],
+                    $route['alias']);
+            } else {
+                $this->routing->add($route['method'],
+                    $route['uri'],
+                    $route['callable']);
+            }
+        }
     }
 
     /**

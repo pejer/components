@@ -9,6 +9,13 @@ namespace DHP\components\middleware;
 use DHP\components\abstractClasses\Middleware;
 use DHP\components\request\Request;
 
+/**
+ * Class BodyParser
+ *
+ * Parses body of request, expecting JSON-data, and turns it into a php-object via json_decode
+ *
+ * @package DHP\components\middleware
+ */
 class BodyParser extends Middleware
 {
     /**

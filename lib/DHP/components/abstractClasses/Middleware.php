@@ -9,7 +9,15 @@
 namespace DHP\components\abstractClasses;
 
 // @codeCoverageIgnoreStart
-abstract class Middleware {
+/**
+ * Class Middleware
+ *
+ * Abstract class that all middleware should extend
+ *
+ * @package DHP\components\abstractClasses
+ */
+abstract class Middleware
+{
     abstract public function __invoke();
 }
 // @codeCoverageIgnoreEnd

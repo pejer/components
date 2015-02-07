@@ -22,6 +22,9 @@ namespace DHP\components\response;
 class Response
 {
 
+    const HTTP_STATUS_OK = 200;
+    const HTTP_STATUS_NOT_FOUND = 404;
+    const HTTP_STATUS_SERVER_ERROR = 500;
     /** @var array List of common status headers */
     private $headerStatusCodes = array(
         100 => "Continue",
@@ -65,11 +68,6 @@ class Response
         504 => "Gateway Time-out",
         505 => "HTTP Version not supported"
     );
-
-    const HTTP_STATUS_OK = 200;
-    const HTTP_STATUS_NOT_FOUND = 404;
-    const HTTP_STATUS_SERVER_ERROR = 500;
-
     /** @var array header store */
     private $headers = array();
 
@@ -78,32 +76,6 @@ class Response
 
     /** @var bool if we have sent headers or not */
     private $headersSent = false;
-
-    /**
-     *
-     * This method sets the headers that is to be sent to the client
-     *
-     * @param String       $value header data
-     * @param boolean      $replace if we should replace a previous header, set to false to NOT replace header
-     * @param integer|null $httpStatusCode The int status code for this header
-     *
-     * @throws \RuntimeException
-     * @return bool
-     *
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     */
-    public function setHeader($value, $replace = true, $httpStatusCode = null)
-    {
-        if ($this->headersSent) {
-            throw new \RuntimeException("Headers have already been sent");
-        }
-        $headerData = $this->formatHeaderData($value);
-        if ($replace === false && isset($this->headers[$headerData])) {
-            return $this;
-        }
-        $this->headers[$headerData] = $httpStatusCode;
-        return $this;
-    }
 
     /**
      *
@@ -142,6 +114,25 @@ class Response
     }
 
     /**
+     * This renders the content and returns it
+     *
+     * @return null|string
+     */
+    private function renderBody()
+    {
+        $return = null;
+        switch (gettype($this->body)) {
+            case 'array':
+            case 'object':
+                $return = json_encode((array)$this->body, JSON_FORCE_OBJECT | JSON_NUMERIC_CHECK);
+                break;
+            default:
+                $return = $this->body;
+        }
+        return $return;
+    }
+
+    /**
      *
      * Appends data to existing body data
      *
@@ -174,6 +165,17 @@ class Response
     }
 
     /**
+     * Sends headers and body
+     * @return $this
+     */
+    public function send()
+    {
+        $this->sendHeaders();
+        $this->sendBody();
+        return $this;
+    }
+
+    /**
      * Sends the headers
      */
     public function sendHeaders()
@@ -195,20 +197,9 @@ class Response
     }
 
     /**
-     * Sends headers and body
-     * @return $this
-     */
-    public function send()
-    {
-        $this->sendHeaders();
-        $this->sendBody();
-        return $this;
-    }
-
-    /**
      * Sets the http-status for the request
      *
-     * @param int         $statusCode The http status code ie 200, 404, 500 etc
+     * @param int $statusCode The http status code ie 200, 404, 500 etc
      * @param null|String $statusMessage The message such as OK, Not Found etc, optional
      *
      * @return $this
@@ -225,6 +216,32 @@ class Response
         }
         $headerValue = sprintf("HTTP/1.1 %d %s", $statusCode, $statusMessage);
         $this->setHeader($headerValue, true, $statusCode);
+        return $this;
+    }
+
+    /**
+     *
+     * This method sets the headers that is to be sent to the client
+     *
+     * @param String $value header data
+     * @param boolean $replace if we should replace a previous header, set to false to NOT replace header
+     * @param integer|null $httpStatusCode The int status code for this header
+     *
+     * @throws \RuntimeException
+     * @return bool
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    public function setHeader($value, $replace = true, $httpStatusCode = null)
+    {
+        if ($this->headersSent) {
+            throw new \RuntimeException("Headers have already been sent");
+        }
+        $headerData = $this->formatHeaderData($value);
+        if ($replace === false && isset($this->headers[$headerData])) {
+            return $this;
+        }
+        $this->headers[$headerData] = $httpStatusCode;
         return $this;
     }
 
@@ -254,24 +271,5 @@ class Response
     private function formatHeaderName($headerName)
     {
         return str_replace(' ', '-', ucwords(strtolower(str_replace(array('-', '_'), ' ', $headerName))));
-    }
-
-    /**
-     * This renders the content and returns it
-     *
-     * @return null|string
-     */
-    private function renderBody()
-    {
-        $return = null;
-        switch (gettype($this->body)) {
-            case 'array':
-            case 'object':
-                $return = json_encode((array)$this->body, JSON_FORCE_OBJECT | JSON_NUMERIC_CHECK);
-                break;
-            default:
-                $return = $this->body;
-        }
-        return $return;
     }
 }

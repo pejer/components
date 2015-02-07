@@ -1,12 +1,12 @@
 <?php
 namespace DHP\components\dependencyinjection;
 
-/**
- *
- * Created by: Henrik Pejer, mr@henrikpejer.com
- * Date: 2014-02-07 14:58
- *
- */
+    /**
+     *
+     * Created by: Henrik Pejer, mr@henrikpejer.com
+     * Date: 2014-02-07 14:58
+     *
+     */
 
 /**
  * Class DependencyInjection
@@ -18,10 +18,9 @@ namespace DHP\components\dependencyinjection;
 class DependencyInjection
 {
 
+    const STORE_STANDARD_BUCKET = 'standard';
     /** @var \StdClass store of values */
     private $store;
-
-    const STORE_STANDARD_BUCKET = 'standard';
 
     /**
      * Initiates the DI store
@@ -35,7 +34,7 @@ class DependencyInjection
      * Sets a value in the bucket
      *
      * @param        $name
-     * @param null   $value
+     * @param null $value
      * @param string $bucket
      *
      * @return \DHP\components\dependencyinjection\Proxy|mixed
@@ -49,7 +48,7 @@ class DependencyInjection
         if (!isset($this->store->{$bucket})) {
             $this->store->{$bucket} = new \stdClass();
         }
-        switch (true){
+        switch (true) {
             case is_string($value) && isset($this->store->{$bucket}->{$value}):
                 $this->store->{$bucket}->{$name} = $this->get($value, $bucket);
                 break;
@@ -60,11 +59,29 @@ class DependencyInjection
                 $this->store->{$bucket}->{$name} = $value;
                 if (is_object($value)) {
                     /** @noinspection PhpParamsInspection */
-                    $this->store->{$bucket}->{get_class($value)} = & $this->store->{$bucket}->{$name};
+                    $this->store->{$bucket}->{get_class($value)} = &$this->store->{$bucket}->{$name};
                 }
                 break;
         }
         return $this->store->{$bucket}->$name;
+    }
+
+    /**
+     * This method cleans key names, normalizing keys that most likely are classes.
+     *
+     * @param string $name key name to check and clean
+     *
+     * @return string
+     */
+    private function cleanName($name)
+    {
+        #if (strpos($name, '\\')) {
+        #    $name = '\\' . trim($name, '\\ ');
+        #}
+        if (class_exists($name, true) || class_exists(trim($name, '\\ '), true)) {
+            $name = '\\' . trim($name, '\\ ');
+        }
+        return $name;
     }
 
     /**
@@ -78,11 +95,11 @@ class DependencyInjection
     public function get($name, $bucket = self::STORE_STANDARD_BUCKET)
     {
         $name = $this->cleanName($name);
-        switch(true){
+        switch (true) {
             case (isset($this->store->{$bucket}->{$name}) &&
-                  is_a($this->store->{$bucket}->{$name}, 'DHP\components\dependencyinjection\Proxy')):
+                is_a($this->store->{$bucket}->{$name}, 'DHP\components\dependencyinjection\Proxy')):
                 $instValues = $this->store->{$bucket}->{$name}->get();
-                $ret        = $this->instantiateObject($instValues['class'], $instValues['args'], $bucket);
+                $ret = $this->instantiateObject($instValues['class'], $instValues['args'], $bucket);
                 foreach ($instValues['methods'] as $methodAndArgs) {
                     call_user_func_array(
                         array(
@@ -97,7 +114,7 @@ class DependencyInjection
             case isset($this->store->{$bucket}->{$name}):
                 $ret = $this->store->{$bucket}->{$name};
                 break;
-            case ( is_string($name) && class_exists($name, true) ):
+            case (is_string($name) && class_exists($name, true)):
                 $this->set($name, null, $bucket);
                 $ret = $this->get($name, $bucket);
                 break;
@@ -111,7 +128,7 @@ class DependencyInjection
      * Instantiates the object
      *
      * @param        $class
-     * @param array  $argsForObject
+     * @param array $argsForObject
      * @param string $bucket
      *
      * @throws \RuntimeException
@@ -120,13 +137,13 @@ class DependencyInjection
     private function instantiateObject($class, array $argsForObject = array(), $bucket = self::STORE_STANDARD_BUCKET)
     {
         $constructorArguments = self::classConstructorArguments($class);
-        $classReflector       = new \ReflectionClass($class);
+        $classReflector = new \ReflectionClass($class);
         if ($classReflector->isInterface() || $classReflector->isAbstract()) {
             throw new \RuntimeException(
                 "Trying to instantiate an interface or abstract class directly. Class was \"{$class}\"."
             );
         }
-        $args        = array();
+        $args = array();
         $argsNotUsed = array_values($argsForObject);
         try {
             $args += $this->getConstructorArguments($constructorArguments, $argsForObject, $bucket);
@@ -136,7 +153,7 @@ class DependencyInjection
         } catch (\Exception $e) {
             try {
                 $return = count($args) == 0 ? $classReflector->newInstance() :
-                  $classReflector->newInstanceArgs($args);
+                    $classReflector->newInstanceArgs($args);
             } catch (\Exception $e) {
                 $return = null;
             }
@@ -156,26 +173,26 @@ class DependencyInjection
     {
         $args = array();
         try {
-            $refClass    = new \ReflectionClass($class);
+            $refClass = new \ReflectionClass($class);
             $constructor = $refClass->getConstructor();
             if ($constructor) {
                 $params = $constructor->getParameters();
                 if ($params) {
                     foreach ($params as $param) {
                         $arg =
-                          array(
-                            'name'     => $param->getName(),
-                            'required' => true,
-                            'class'    => null
-                          );
+                            array(
+                                'name'     => $param->getName(),
+                                'required' => true,
+                                'class'    => null
+                            );
                         if ($param->getClass()) {
                             $arg['class'] =
-                              $param->getClass()->getName();
+                                $param->getClass()->getName();
                         }
                         if ($param->isOptional()) {
                             $arg['required'] = false;
-                            $arg['default']  =
-                              $param->getDefaultValue();
+                            $arg['default'] =
+                                $param->getDefaultValue();
                         }
                         $args[] = $arg;
                     }
@@ -204,9 +221,9 @@ class DependencyInjection
             # get a value, if possible...
             switch (true) {
                 case (!empty($constructorArgument['class']) &&
-                      ($arg = $this->get($constructorArgument['class'], $bucket)) !== null):
+                    ($arg = $this->get($constructorArgument['class'], $bucket)) !== null):
                 case (!empty($constructorArgument['name']) &&
-                      ($arg = $this->get($constructorArgument['name'], $bucket)) !== null):
+                    ($arg = $this->get($constructorArgument['name'], $bucket)) !== null):
                     $args[] = $arg;
                     break;
                 case isset($argsForObject[$key]):
@@ -223,23 +240,5 @@ class DependencyInjection
             }
         }
         return $args;
-    }
-
-    /**
-     * This method cleans key names, normalizing keys that most likely are classes.
-     *
-     * @param string $name key name to check and clean
-     *
-     * @return string
-     */
-    private function cleanName($name)
-    {
-        #if (strpos($name, '\\')) {
-        #    $name = '\\' . trim($name, '\\ ');
-        #}
-        if (class_exists($name, true) || class_exists(trim($name, '\\ '), true)) {
-            $name = '\\' . trim($name, '\\ ');
-        }
-        return $name;
     }
 }

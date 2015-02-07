@@ -14,7 +14,7 @@ class Event
     const EVENT_ABORT = null;
     public $delegates = array();
     public $events = array(
-      '*' => array()
+        '*' => array()
     );
 
     /**
@@ -27,13 +27,13 @@ class Event
      *
      *
      * @param String $eventName
-     * @param null   $one
-     * @param null   $two
-     * @param null   $three
-     * @param null   $four
-     * @param null   $five
-     * @param null   $six
-     * @param null   $seven
+     * @param null $one
+     * @param null $two
+     * @param null $three
+     * @param null $four
+     * @param null $five
+     * @param null $six
+     * @param null $seven
      *
      * @return mixed
      */
@@ -46,8 +46,9 @@ class Event
         &$five = null,
         &$six = null,
         &$seven = null
-    ) {
-        $args   = func_get_args();
+    )
+    {
+        $args = func_get_args();
         $return = null;
         switch (count($args)) {
             case 1:
@@ -76,76 +77,6 @@ class Event
                 break;
         }
 
-        return $return;
-    }
-
-    /**
-     * This is used to register a callable with a certain event.
-     *
-     * @param String   $eventName
-     * @param Callable $callable
-     *
-     * @return mixed
-     */
-    public function register(
-        $eventName,
-        callable $callable
-    ) {
-        if (!isset( $this->events[$eventName] )) {
-            $this->events[$eventName] = array();
-        }
-        $this->events[$eventName][] = $callable;
-        return true;
-    }
-
-    /**
-     * This is used when there are events that should not be publicly called but only
-     * called on a observer, sort of.
-     *
-     * This way an object can tell it's observer when a certain event happened and
-     * delegate some of its functionality to the observer.
-     *
-     * @param mixed $objectToSubscribeTo object to subscribe to
-     * @param mixed $subscriber          observer
-     *
-     * @return mixed
-     */
-    public function subscribe($objectToSubscribeTo, &$subscriber)
-    {
-        $objectToSubscribeTo = spl_object_hash($objectToSubscribeTo);
-        if (!isset( $this->delegates[$objectToSubscribeTo] )) {
-            $this->delegates[$objectToSubscribeTo] = array();
-        }
-        $this->delegates[$objectToSubscribeTo][spl_object_hash($subscriber)] = & $subscriber;
-    }
-
-    /**
-     * This will call $method on all the observers to the delegate, usually an object
-     * calls this with $this :
-     *
-     * triggerSubscriber($this, 'observerNeedsToReactToThis')
-     *
-     * @param Object $delegate
-     * @param String $method
-     * @param null   $one
-     * @param null   $two
-     * @param null   $three
-     * @param null   $four
-     *
-     * @return mixed
-     */
-    public function triggerSubscribe($delegate, $method, &$one = null, &$two = null, &$three = null, &$four = null)
-    {
-        $objectHash = spl_object_hash($delegate);
-        $return     = null;
-        if (isset( $this->delegates[$objectHash] )) {
-            foreach ($this->delegates[$objectHash] as $target) {
-                $return = $target->$method($one, $two, $three, $four);
-                if ($return === false) {
-                    break;
-                }
-            }
-        }
         return $return;
     }
 
@@ -179,15 +110,16 @@ class Event
         &$five = null,
         &$six = null,
         &$seven = null
-    ) {
-        $return   = null;
-        $numArgs  = ( func_num_args() - 1 );
+    )
+    {
+        $return = null;
+        $numArgs = (func_num_args() - 1);
         $callArgs = null;
         foreach ($this->mergeEventToCall($eventName) as $event) {
             $tempReturn = null;
             switch ($numArgs) {
                 case 0:
-                    $callArgs = isset( $callArgs ) ? $callArgs : array();
+                    $callArgs = isset($callArgs) ? $callArgs : array();
                     if (is_array($event)) {
                         $tempReturn = call_user_func($event);
                     } else {
@@ -195,7 +127,7 @@ class Event
                     }
                     break;
                 case 1:
-                    $callArgs = isset( $callArgs ) ? $callArgs : array(&$one);
+                    $callArgs = isset($callArgs) ? $callArgs : array(&$one);
                     if (is_array($event)) {
                         $tempReturn = call_user_func_array($event, $callArgs);
                     } else {
@@ -203,7 +135,7 @@ class Event
                     }
                     break;
                 case 2:
-                    $callArgs = isset( $callArgs ) ? $callArgs : array(&$one, &$two);
+                    $callArgs = isset($callArgs) ? $callArgs : array(&$one, &$two);
                     if (is_array($event)) {
                         $tempReturn = call_user_func_array($event, $callArgs);
                     } else {
@@ -211,7 +143,7 @@ class Event
                     }
                     break;
                 case 3:
-                    $callArgs = isset( $callArgs ) ? $callArgs : array(&$one, &$two, &$three);
+                    $callArgs = isset($callArgs) ? $callArgs : array(&$one, &$two, &$three);
                     if (is_array($event)) {
                         $tempReturn = call_user_func_array($event, $callArgs);
                     } else {
@@ -219,7 +151,7 @@ class Event
                     }
                     break;
                 case 4:
-                    $callArgs = isset( $callArgs ) ? $callArgs : array(&$one, &$two, &$three, &$four);
+                    $callArgs = isset($callArgs) ? $callArgs : array(&$one, &$two, &$three, &$four);
                     if (is_array($event)) {
                         $tempReturn = call_user_func_array($event, $callArgs);
                     } else {
@@ -227,7 +159,7 @@ class Event
                     }
                     break;
                 case 5:
-                    $callArgs = isset( $callArgs ) ? $callArgs : array(&$one, &$two, &$three, &$four, &$five);
+                    $callArgs = isset($callArgs) ? $callArgs : array(&$one, &$two, &$three, &$four, &$five);
                     if (is_array($event)) {
                         $tempReturn = call_user_func_array($event, $callArgs);
                     } else {
@@ -235,7 +167,7 @@ class Event
                     }
                     break;
                 case 6:
-                    $callArgs = isset( $callArgs ) ? $callArgs : array(&$one, &$two, &$three, &$four, &$five, &$six);
+                    $callArgs = isset($callArgs) ? $callArgs : array(&$one, &$two, &$three, &$four, &$five, &$six);
                     if (is_array($event)) {
                         $tempReturn = call_user_func_array($event, $callArgs);
                     } else {
@@ -244,7 +176,7 @@ class Event
                     break;
                 case 7:
                     $callArgs =
-                      isset( $callArgs ) ? $callArgs : array(&$one, &$two, &$three, &$four, &$five, &$six, &$seven);
+                        isset($callArgs) ? $callArgs : array(&$one, &$two, &$three, &$four, &$five, &$six, &$seven);
                     if (is_array($event)) {
                         $tempReturn = call_user_func_array($event, $callArgs);
                     } else {
@@ -273,21 +205,92 @@ class Event
         $eventKeys = array($eventName);
         if (strpos($eventName, '.')) {
             $eventParts = explode('.', $eventName);
-            $eventBase  = '';
+            $eventBase = '';
             foreach ($eventParts as $part) {
                 $eventBase .= $part;
                 $eventKeys[] = $eventBase . '*';
                 $eventKeys[] = $eventBase . '.*';
             }
         }
-        $eventKeys[]    = '*';
+        $eventKeys[] = '*';
         $eventsToReturn = array();
         foreach ($eventKeys as $event) {
-            if (isset( $this->events[$event] )) {
+            if (isset($this->events[$event])) {
                 $eventsToReturn =
-                  array_merge($eventsToReturn, $this->events[$event]);
+                    array_merge($eventsToReturn, $this->events[$event]);
             }
         }
         return $eventsToReturn;
+    }
+
+    /**
+     * This is used to register a callable with a certain event.
+     *
+     * @param String $eventName
+     * @param Callable $callable
+     *
+     * @return mixed
+     */
+    public function register(
+        $eventName,
+        callable $callable
+    )
+    {
+        if (!isset($this->events[$eventName])) {
+            $this->events[$eventName] = array();
+        }
+        $this->events[$eventName][] = $callable;
+        return true;
+    }
+
+    /**
+     * This is used when there are events that should not be publicly called but only
+     * called on a observer, sort of.
+     *
+     * This way an object can tell it's observer when a certain event happened and
+     * delegate some of its functionality to the observer.
+     *
+     * @param mixed $objectToSubscribeTo object to subscribe to
+     * @param mixed $subscriber observer
+     *
+     * @return mixed
+     */
+    public function subscribe($objectToSubscribeTo, &$subscriber)
+    {
+        $objectToSubscribeTo = spl_object_hash($objectToSubscribeTo);
+        if (!isset($this->delegates[$objectToSubscribeTo])) {
+            $this->delegates[$objectToSubscribeTo] = array();
+        }
+        $this->delegates[$objectToSubscribeTo][spl_object_hash($subscriber)] = &$subscriber;
+    }
+
+    /**
+     * This will call $method on all the observers to the delegate, usually an object
+     * calls this with $this :
+     *
+     * triggerSubscriber($this, 'observerNeedsToReactToThis')
+     *
+     * @param Object $delegate
+     * @param String $method
+     * @param null $one
+     * @param null $two
+     * @param null $three
+     * @param null $four
+     *
+     * @return mixed
+     */
+    public function triggerSubscribe($delegate, $method, &$one = null, &$two = null, &$three = null, &$four = null)
+    {
+        $objectHash = spl_object_hash($delegate);
+        $return = null;
+        if (isset($this->delegates[$objectHash])) {
+            foreach ($this->delegates[$objectHash] as $target) {
+                $return = $target->$method($one, $two, $three, $four);
+                if ($return === false) {
+                    break;
+                }
+            }
+        }
+        return $return;
     }
 }

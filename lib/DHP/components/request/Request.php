@@ -37,12 +37,12 @@ class Request
 
     /**
      * @param string $method method of the request
-     * @param null   $uri the uri of the request
-     * @param null   $body body of the request
-     * @param array  $post post variables of the request
-     * @param array  $get get variables of the request
-     * @param array  $files files sent in the request
-     * @param array  $headers headers sent in the request
+     * @param null $uri the uri of the request
+     * @param null $body body of the request
+     * @param array $post post variables of the request
+     * @param array $get get variables of the request
+     * @param array $files files sent in the request
+     * @param array $headers headers sent in the request
      */
     public function __construct(
         $method = "HEADER",
@@ -52,15 +52,36 @@ class Request
         $get = array(),
         $files = array(),
         $headers = array()
-    ) {
-        $this->requestMethod  = $method;
-        $this->requestUri     = $this->cleanUri($uri);
-        $this->requestPost    = $post;
-        $this->requestGet     = $get;
-        $this->requestFiles   = $files;
+    )
+    {
+        $this->requestMethod = $method;
+        $this->requestUri = $this->cleanUri($uri);
+        $this->requestPost = $post;
+        $this->requestGet = $get;
+        $this->requestFiles = $files;
         $this->requestHeaders = $headers;
-        $this->requestBody    = $body;
+        $this->requestBody = $body;
         $this->makeVars();
+    }
+
+    /**
+     * We trim of spaces and slashes from the uri so we never have beginning or
+     * trailing slashes
+     *
+     * @param string $uri
+     * @return string
+     */
+    private function cleanUri($uri)
+    {
+        return trim($uri, ' /');
+    }
+
+    /**
+     * Merges post and get vars to one
+     */
+    private function makeVars()
+    {
+        $this->requestVars = array_merge($this->requestGet, $this->requestPost);
     }
 
     /**
@@ -69,7 +90,7 @@ class Request
      */
     public function __get($name)
     {
-        $return  = null;
+        $return = null;
         $getName = $this->readAndSettableVars($name);
         if (isset($getName)) {
             $return = $this->{$getName};
@@ -86,7 +107,7 @@ class Request
      */
     public function __set($name, $value)
     {
-        $return  = null;
+        $return = null;
         $getName = $this->readAndSettableVars($name);
         if (isset($getName)) {
             $this->{$getName} = $value;
@@ -135,7 +156,6 @@ class Request
         return $return;
     }
 
-
     /**
      * This uses whatever it can find from the environment and tries to set
      * up the class automatically
@@ -160,10 +180,10 @@ class Request
             $this->requestMethod = $_SERVER['REQUEST_METHOD'];
         }
 
-        $this->requestBody    = file_get_contents('php://input');
-        $this->requestPost    = $_POST;
-        $this->requestGet     = $_GET;
-        $this->requestFiles   = $_FILES;
+        $this->requestBody = file_get_contents('php://input');
+        $this->requestPost = $_POST;
+        $this->requestGet = $_GET;
+        $this->requestFiles = $_FILES;
         $this->requestHeaders = array();
         foreach ($_SERVER as $name => $value) {
             if (substr($name, 0, 5) == 'HTTP_') {
@@ -175,25 +195,5 @@ class Request
             }
         }
         $this->makeVars();
-    }
-
-    /**
-     * Merges post and get vars to one
-     */
-    private function makeVars()
-    {
-        $this->requestVars = array_merge($this->requestGet, $this->requestPost);
-    }
-
-    /**
-     * We trim of spaces and slashes from the uri so we never have beginning or
-     * trailing slashes
-     *
-     * @param string $uri
-     * @return string
-     */
-    private function cleanUri($uri)
-    {
-        return trim($uri, ' /');
     }
 }

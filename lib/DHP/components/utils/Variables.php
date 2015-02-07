@@ -14,7 +14,7 @@ class Variables extends Constants
      * Magic set-method.
      *
      * @param string $name
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return $this
      */
@@ -33,7 +33,7 @@ class Variables extends Constants
      */
     public function __call($name, $arguments)
     {
-        list( $environment, $value ) = $arguments;
+        list($environment, $value) = $arguments;
         $this->values[$environment][$name] = $value;
         return $this;
     }

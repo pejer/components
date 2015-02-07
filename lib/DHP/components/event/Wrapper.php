@@ -111,7 +111,7 @@ EOT;
             $byRef = $method->returnsReference() ? "&" : "";
 
             // PHP fragment that is the arguments definition for this method
-            $defparams  = array();
+            $defparams = array();
             $callparams = array();
 
             // Array of defaults (sparse numeric)
@@ -161,10 +161,10 @@ EOT;
                 $triggerParams = '';
                 preg_match_all("#(\\$[^=]+)#", $defparams, $matches);
                 if (count($matches[1]) > 0) {
-                    $triggerParams = ', &'.implode(', &', $matches[1]);
+                    $triggerParams = ', &' . implode(', &', $matches[1]);
                 }
                 if ($method->name == '__construct') {
-                    $defparams = '\DHP\components\event\Event $__________event'.($defparams==''?'':','.$defparams);
+                    $defparams = '\DHP\components\event\Event $__________event' . ($defparams == '' ? '' : ',' . $defparams);
                     $args .= '$this->__________event = $__________event;array_shift($args);';
 
                 }

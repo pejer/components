@@ -1,12 +1,12 @@
 <?php
 namespace DHP\components\dependencyinjection;
 
-/**
- *
- * Created by: Henrik Pejer, mr@henrikpejer.com
- * Date: 2014-02-07 15:16
- *
- */
+    /**
+     *
+     * Created by: Henrik Pejer, mr@henrikpejer.com
+     * Date: 2014-02-07 15:16
+     *
+     */
 
 /**
  * Class Proxy
@@ -41,9 +41,9 @@ class Proxy
     public function get()
     {
         return array(
-          'class'   => $this->classToInstantiate,
-          'args'    => $this->argumentsToConstructor,
-          'methods' => $this->methodCalls
+            'class'   => $this->classToInstantiate,
+            'args'    => $this->argumentsToConstructor,
+            'methods' => $this->methodCalls
         );
     }
 
@@ -51,14 +51,14 @@ class Proxy
      * Adds a method to be called once the object has been instantiated.
      *
      * @param String $method
-     * @param array  $args
+     * @param array $args
      *
      * @return $this
      */
     public function addMethodCall($method, $args = array())
     {
-        $args                = !is_array($args) ? array($args) : $args;
-        $this->methodCalls[] = (object) array('method' => $method, 'args' => $args);
+        $args = !is_array($args) ? array($args) : $args;
+        $this->methodCalls[] = (object)array('method' => $method, 'args' => $args);
         return $this;
     }
 
