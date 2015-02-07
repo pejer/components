@@ -237,7 +237,6 @@ class Routing
             }
         }
         return $return;
-
     }
 
     /**

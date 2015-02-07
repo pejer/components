@@ -6,8 +6,12 @@
 
 namespace DHP\components;
 
-use DHP\components\response\Response as Response;
-use DHP\components\request\Request as Request;
+use DHP\components\abstractClasses\Middleware;
+use DHP\components\dependencyinjection\DependencyInjection;
+use DHP\components\event\Event;
+use DHP\components\response\Response;
+use DHP\components\request\Request;
+use DHP\components\routing\Routing;
 
 /**
  * Class app
@@ -17,6 +21,7 @@ use DHP\components\request\Request as Request;
  */
 class app
 {
+    public $stopRunningRoutes;
     /**
      * @var Request
      */
@@ -25,21 +30,41 @@ class app
      * @var Response
      */
     private $response;
+    /**
+     * @var Event
+     */
+    private $event;
+    /**
+     * @var DependencyInjection
+     */
+    private $dependencyInjection;
+    /**
+     * @var Routing
+     */
+    private $routing;
 
     /**
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
+     * @param Event $event
+     * @param DependencyInjection $dependencyInjection
+     * @param Routing $routing
      */
-    public function __construct(Request $request, Response $response){
+    public function __construct(Request $request, Response $response, Event $event, DependencyInjection $dependencyInjection, Routing $routing)
+    {
         $this->request = $request;
         $this->response = $response;
+        $this->event = $event;
+        $this->dependencyInjection = $dependencyInjection;
+        $this->routing = $routing;
     }
 
     /**
      * Loads and setups the routing for this app
      * @param Array $routes
      */
-    public function loadRoutes(Array $routes){
+    public function loadRoutes(Array $routes)
+    {
 
     }
 
@@ -48,30 +73,58 @@ class app
      *
      * @param array $config
      */
-    public function loadAppConfig(Array $config){
+    public function loadAppConfig(Array $config)
+    {
 
     }
 
     /**
      * With the method, we apply modules, middleware or other
      * functionality to the application
-     * @param mixed $applyThis the object, function, closure to apply
+     * @param String|Middleware $applyThis the object, function, closure to apply
      */
-    public function apply($applyThis){
-
+    public function apply($applyThis)
+    {
+        if (is_string($applyThis)) {
+            $apply = $this->dependencyInjection->get($applyThis);
+        } else {
+            $apply = $applyThis;
+        }
+        if (is_a($apply, '\DHP\components\abstractClasses\Middleware')) {
+            $apply();
+        }
     }
 
     /**
      * This will start the app
      */
-    public function __invoke(){
-
-    }
-
-    /**
-     * This will invoke all the middlewares that has been applied
-     */
-    private function runMiddleware(){
-
+    public function __invoke()
+    {
+        $routes = $this->routing->match($this->request->method, $this->request->uri);
+        $that = $this;
+        $nextClosure = function () use ($that) {
+            $that->stopRunningRoutes = false;
+        };
+        foreach ($routes as $route) {
+            # default value is true - meaning that unless routes explicitly call next(), the routing will stop
+            $this->stopRunningRoutes = true;
+            # if it is an array, we assume this is in the form of a string with a class, and a string with the name
+            # of the method to call
+            if (is_array($route['closure']) &&
+                isset($route['closure']['controller']) &&
+                isset($route['closure']['method'])
+            ) {
+                $controller = $this->dependencyInjection->get($route['closure']['controller']);
+                $callable = array($controller, $route['closure']['method']);
+            } else {
+                $callable = $route['closure'];
+            }
+            $args = $route['route'];
+            array_push($args, $nextClosure, $this->dependencyInjection);
+            call_user_func_array($callable, $args);
+            if ($this->stopRunningRoutes) {
+                break;
+            }
+        }
     }
 }

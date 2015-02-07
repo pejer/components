@@ -6,9 +6,10 @@
 
 namespace DHP\components\middleware;
 
+use DHP\components\abstractClasses\Middleware;
 use DHP\components\request\Request;
 
-class BodyParser
+class BodyParser extends Middleware
 {
     /**
      * @var Request
