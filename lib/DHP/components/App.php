@@ -44,19 +44,24 @@ class App
     private $routing;
 
     /**
-     * @param Request $request
-     * @param Response $response
-     * @param Event $event
+     * @param Request             $request
+     * @param Response            $response
+     * @param Event               $event
      * @param DependencyInjection $dependencyInjection
-     * @param Routing $routing
+     * @param Routing             $routing
      */
-    public function __construct(Request $request, Response $response, Event $event, DependencyInjection $dependencyInjection, Routing $routing)
-    {
-        $this->request = $request;
-        $this->response = $response;
-        $this->event = $event;
+    public function __construct(
+        Request $request,
+        Response $response,
+        Event $event,
+        DependencyInjection $dependencyInjection,
+        Routing $routing
+    ) {
+        $this->request             = $request;
+        $this->response            = $response;
+        $this->event               = $event;
         $this->dependencyInjection = $dependencyInjection;
-        $this->routing = $routing;
+        $this->routing             = $routing;
     }
 
     /**
@@ -66,14 +71,14 @@ class App
      */
     public function loadAppConfig(Array $config)
     {
-        foreach ($config['controllers'] as $controller) {
-            $controller[1] = isset($controller[1]) ? $controller[1] : null;
-            $this->routing->makeRoutesForClass($controller[0], $controller[1]);
-        }
         $this->loadRoutes($config['routes']);
         foreach ($config['middleware'] as $middleware) {
             $middleware[1] = isset($middleware[1]) ? $middleware[1] : '';
             $this->apply($middleware);
+        }
+        foreach ($config['controllers'] as $controller) {
+            $controller[1] = isset($controller[1]) ? $controller[1] : null;
+            $this->routing->makeRoutesForClass($controller[0], $controller[1]);
         }
     }
 
@@ -84,16 +89,13 @@ class App
     public function loadRoutes(Array $routes)
     {
         foreach ($routes as $route) {
-            if (isset($route['alias'])) {
-                $this->routing->add($route['method'],
-                    $route['uri'],
-                    $route['callable'],
-                    $route['alias']);
-            } else {
-                $this->routing->add($route['method'],
-                    $route['uri'],
-                    $route['callable']);
-            }
+            $route['alias'] = isset($route['alias']) ? $route['alias'] : null;
+            $this->routing->add(
+                $route['method'],
+                $route['uri'],
+                $route['closure'],
+                $route['alias']
+            );
         }
     }
 
@@ -119,8 +121,8 @@ class App
      */
     public function __invoke()
     {
-        $routes = $this->routing->match($this->request->method, $this->request->uri);
-        $that = $this;
+        $routes      = $this->routing->match($this->request->method, $this->request->uri);
+        $that        = $this;
         $nextClosure = function () use ($that) {
             $that->stopRunningRoutes = false;
         };
@@ -134,7 +136,7 @@ class App
                 isset($route['closure']['method'])
             ) {
                 $controller = $this->dependencyInjection->get($route['closure']['controller']);
-                $callable = array($controller, $route['closure']['method']);
+                $callable   = array($controller, $route['closure']['method']);
             } else {
                 $callable = $route['closure'];
             }
