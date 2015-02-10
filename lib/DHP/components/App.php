@@ -44,11 +44,11 @@ class App
     private $routing;
 
     /**
-     * @param Request             $request
-     * @param Response            $response
-     * @param Event               $event
+     * @param Request $request
+     * @param Response $response
+     * @param Event $event
      * @param DependencyInjection $dependencyInjection
-     * @param Routing             $routing
+     * @param Routing $routing
      */
     public function __construct(
         Request $request,
@@ -56,12 +56,13 @@ class App
         Event $event,
         DependencyInjection $dependencyInjection,
         Routing $routing
-    ) {
-        $this->request             = $request;
-        $this->response            = $response;
-        $this->event               = $event;
+    )
+    {
+        $this->request = $request;
+        $this->response = $response;
+        $this->event = $event;
         $this->dependencyInjection = $dependencyInjection;
-        $this->routing             = $routing;
+        $this->routing = $routing;
     }
 
     /**
@@ -80,6 +81,7 @@ class App
             $controller[1] = isset($controller[1]) ? $controller[1] : null;
             $this->routing->makeRoutesForClass($controller[0], $controller[1]);
         }
+        return $this;
     }
 
     /**
@@ -97,6 +99,7 @@ class App
                 $route['alias']
             );
         }
+        return $this;
     }
 
     /**
@@ -121,8 +124,8 @@ class App
      */
     public function __invoke()
     {
-        $routes      = $this->routing->match($this->request->method, $this->request->uri);
-        $that        = $this;
+        $routes = $this->routing->match($this->request->method, $this->request->uri);
+        $that = $this;
         $nextClosure = function () use ($that) {
             $that->stopRunningRoutes = false;
         };
@@ -136,7 +139,7 @@ class App
                 isset($route['closure']['method'])
             ) {
                 $controller = $this->dependencyInjection->get($route['closure']['controller']);
-                $callable   = array($controller, $route['closure']['method']);
+                $callable = array($controller, $route['closure']['method']);
             } else {
                 $callable = $route['closure'];
             }

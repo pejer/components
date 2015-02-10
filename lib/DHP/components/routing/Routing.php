@@ -48,8 +48,8 @@ class Routing
 
         $matchingRoutes = array();
 
-        foreach ($routesToMatch as $routeUri =>$routesArray) {
-            foreach($routesArray as $closure) {
+        foreach ($routesToMatch as $routeUri => $routesArray) {
+            foreach ($routesArray as $closure) {
                 if (false !== ($routeMatchReturn = $this->matchUriToRoute($uri, $routeUri))) {
                     $matchingRoutes[] = array(
                         'closure' => $closure,
@@ -209,6 +209,13 @@ class Routing
     }
 
     /**
+     *
+     * Parses a class for doc-comments and turns them into routes. The doc-comments
+     * that are used :
+     *        method = http-method that this method should be trigger for, GET; POST etc
+     *        uri = the uri that this method will correspond to
+     *        routeAlias = an alias for the route
+     *
      * @param      $controllerClass
      * @param null $uriNamespace
      *
@@ -237,6 +244,9 @@ class Routing
     }
 
     /**
+     *
+     * Extracts the @-names and their values from a doc comment
+     *
      * @param $reflectionMethod
      * @return array
      */
@@ -259,6 +269,9 @@ class Routing
     }
 
     /**
+     *
+     * Adds a routing
+     *
      * @param String|Array $httpMethod The http method for which this route should be called
      * @param string $uri The uri for this method
      * @param callable|array $closure The callback or array for calling a method on an object
