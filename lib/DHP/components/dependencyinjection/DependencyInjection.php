@@ -28,6 +28,8 @@ class DependencyInjection
     public function __construct()
     {
         $this->store = new \stdClass();
+        # remember to store ourselfs as well.
+        $this->set(get_class($this),$this);
     }
 
     /**
