@@ -58,7 +58,10 @@ class propelApi
      */
     public function getObject($table, $id = null, $next)
     {
-        $obj = $this->propelNamespace . '\\' . $table;
+        $obj = $this->propelNamespace . '\\' . $table . 'Query';
+        # query object
+        $propelQuery = new $obj();
+        $this->response->setBody($propelQuery->findPk($id)->toJSON());
         $next();
     }
 
@@ -69,8 +72,24 @@ class propelApi
      * @uri :table/:id
      * @routeAlias propelApi.post
      */
-    public function post()
+    public function post($table, $id, $next)
     {
-
+        $obj  = $this->propelNamespace . '\\' . $table;
+        $post = new $obj();
+        if (is_string($this->request->body)) {
+            $post->fromJSON($this->request->body);
+        } else {
+            $post->fromArray($this->request->body);
+        }
+        if (is_callable(array($post, 'validate')) && !$post->validate()) {
+            $message = '';
+            foreach ($post->getValidationFailures() as $failure) {
+                $message .= "Property " . $failure->getPropertyPath() . ": " . $failure->getMessage() . "\n";
+            }
+            throw new \RuntimeException($message);
+        }
+        $post->save();
+        $this->response->setBody($post->toJSON());
+        $next();
     }
 }

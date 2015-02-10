@@ -150,5 +150,6 @@ class App
                 break;
             }
         }
+        $this->response->send();
     }
 }

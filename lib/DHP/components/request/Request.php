@@ -37,12 +37,12 @@ class Request
 
     /**
      * @param string $method method of the request
-     * @param null $uri the uri of the request
-     * @param null $body body of the request
-     * @param array $post post variables of the request
-     * @param array $get get variables of the request
-     * @param array $files files sent in the request
-     * @param array $headers headers sent in the request
+     * @param null   $uri the uri of the request
+     * @param null   $body body of the request
+     * @param array  $post post variables of the request
+     * @param array  $get get variables of the request
+     * @param array  $files files sent in the request
+     * @param array  $headers headers sent in the request
      */
     public function __construct(
         $method = "HEADER",
@@ -52,15 +52,14 @@ class Request
         $get = array(),
         $files = array(),
         $headers = array()
-    )
-    {
-        $this->requestMethod = $method;
-        $this->requestUri = $this->cleanUri($uri);
-        $this->requestPost = $post;
-        $this->requestGet = $get;
-        $this->requestFiles = $files;
+    ) {
+        $this->requestMethod  = $method;
+        $this->requestUri     = $this->cleanUri($uri);
+        $this->requestPost    = $post;
+        $this->requestGet     = $get;
+        $this->requestFiles   = $files;
         $this->requestHeaders = $headers;
-        $this->requestBody = $body;
+        $this->requestBody    = $body;
         $this->makeVars();
     }
 
@@ -90,7 +89,7 @@ class Request
      */
     public function __get($name)
     {
-        $return = null;
+        $return  = null;
         $getName = $this->readAndSettableVars($name);
         if (isset($getName)) {
             $return = $this->{$getName};
@@ -107,7 +106,7 @@ class Request
      */
     public function __set($name, $value)
     {
-        $return = null;
+        $return  = null;
         $getName = $this->readAndSettableVars($name);
         if (isset($getName)) {
             $this->{$getName} = $value;
@@ -165,12 +164,15 @@ class Request
      */
     public function setupWithEnvironment()
     {
+        $this->requestBody    = file_get_contents('php://input');
         switch (true) {
             case isset($_SERVER['REQUEST_URI']):
                 $url = $_SERVER['REQUEST_URI'];
                 break;
             case isset($_SERVER['argv']) && isset($_SERVER['argv'][1]):
-                $url = $_SERVER['argv'][1];
+                $url    = $_SERVER['argv'][1];
+                $this->requestMethod = isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : 'HEADER';
+                $this->requestBody   = isset($_SERVER['argv'][3]) ? $_SERVER['argv'][3] : $this->requestBody;
                 break;
             default:
                 $url = '';
@@ -180,10 +182,9 @@ class Request
             $this->requestMethod = $_SERVER['REQUEST_METHOD'];
         }
 
-        $this->requestBody = file_get_contents('php://input');
-        $this->requestPost = $_POST;
-        $this->requestGet = $_GET;
-        $this->requestFiles = $_FILES;
+        $this->requestPost    = $_POST;
+        $this->requestGet     = $_GET;
+        $this->requestFiles   = $_FILES;
         $this->requestHeaders = array();
         foreach ($_SERVER as $name => $value) {
             if (substr($name, 0, 5) == 'HTTP_') {
