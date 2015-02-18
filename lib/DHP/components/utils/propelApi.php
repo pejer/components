@@ -30,18 +30,23 @@ class propelApi
      * @var String
      */
     private $propelNamespace;
+    /**
+     * @var Array
+     */
+    private $propelConfig;
 
     /**
      * Initializes the object
-     * @param String   $propelNamespace
-     * @param Request  $request
+     * @param Array $propelConfig
+     * @param Request $request
      * @param Response $response
      */
-    public function __construct($propelNamespace, Request $request, Response $response)
+    public function __construct($propelConfig, Request $request, Response $response)
     {
-        $this->request         = $request;
-        $this->response        = $response;
-        $this->propelNamespace = $propelNamespace;
+        $this->request = $request;
+        $this->response = $response;
+        $this->propelConfig = $propelConfig;
+        $this->propelNamespace = $propelConfig['namespace'];
     }
 
     /**
@@ -52,17 +57,18 @@ class propelApi
      * @routeAlias propelApi.get
      * @param      $table
      * @param null $id
-     * @param null $edit
-     * @param      $next
+     * @param  callable $next
      * @param      $dependencyInjection
      */
-    public function getObject($table, $id = null, $next)
+    public function getObject($table, $id = null, callable $next = null)
     {
         $obj = $this->propelNamespace . '\\' . $table . 'Query';
         # query object
         $propelQuery = new $obj();
         $this->response->setBody($propelQuery->findPk($id)->toJSON());
-        $next();
+        if (isset($next)) {
+            $next();
+        }
     }
 
     /**
@@ -71,10 +77,13 @@ class propelApi
      * @method POST
      * @uri :table/:id
      * @routeAlias propelApi.post
+     * @param string $table
+     * @param int $id
+     * @param callable|null $next
      */
-    public function post($table, $id, $next)
+    public function post($table, $id, callable $next = null)
     {
-        $obj  = $this->propelNamespace . '\\' . $table;
+        $obj = $this->propelNamespace . '\\' . $table;
         $post = new $obj();
         if (is_string($this->request->body)) {
             $post->fromJSON($this->request->body);
@@ -90,6 +99,8 @@ class propelApi
         }
         $post->save();
         $this->response->setBody($post->toJSON());
-        $next();
+        if (isset($next)) {
+            $next();
+        }
     }
 }

@@ -12,11 +12,6 @@ namespace DHP\components\utils;
 class String
 {
 
-    /**
-     * Initiates the string-class
-     *
-     * @param $value
-     */
     public function __construct($value)
     {
         $this->value = $value;
@@ -25,9 +20,9 @@ class String
     /**
      * Mimics str_replace behaviour
      *
-     * @param string|array $search what to search for
+     * @param string|array $search  what to search for
      * @param string|array $replace what to replace with
-     * @param null|int $count how many times to replace
+     * @param null|int     $count   how many times to replace
      *
      * @return $this
      */
@@ -40,9 +35,9 @@ class String
     /**
      * Mimics str_pad behaviour
      *
-     * @param int $length how long should the string be padded to
+     * @param int    $length    how long should the string be padded to
      * @param string $padString the string to pad with
-     * @param int $padType STR_PAD_x - constant values
+     * @param int    $padType   STR_PAD_x - constant values
      *
      * @return $this
      */
@@ -53,10 +48,10 @@ class String
     }
 
     /**
-     * @param string $pattern pattern to match
+     * @param string $pattern     pattern to match
      * @param string $replacement what to replace pattern with
-     * @param int $limit how many times should we replace
-     * @param null $count count variable
+     * @param int    $limit       how many times should we replace
+     * @param null   $count       count variable
      *
      * @return $this
      */
@@ -69,11 +64,12 @@ class String
     /**
      * Mimics preg_match behaviour
      *
-     * @param string $pattern Pattern to match
+     * @param string     $pattern Pattern to match
      * @param array|null $matches found matches
-     * @param int $flags
-     * @param int $offset
-     * @return int
+     * @param int        $flags
+     * @param int        $offset
+     *
+     * @return $this
      */
     public function pregMatch($pattern, &$matches = null, $flags = 0, $offset = 0)
     {
@@ -85,8 +81,8 @@ class String
      *
      * @param      $pattern
      * @param null $matches
-     * @param int $flags
-     * @param int $offset
+     * @param int  $flags
+     * @param int  $offset
      *
      * @return $this
      */

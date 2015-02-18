@@ -111,6 +111,9 @@ class ResponseTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testSend(){
         $this->object->setStatus(DHP\components\response\Response::HTTP_STATUS_OK);
         $this->object->setBody("All is well");
