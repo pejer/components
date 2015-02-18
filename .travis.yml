@@ -13,5 +13,5 @@ php:
 
 # omitting "script:" will default to phpunit
 # use the $DB env variable to determine the phpunit.xml to use
-script: phpunit --stderr --bootstrap Tests/bootstrap.php Tests
+script: phpunit --stderr --coverage-text --bootstrap Tests/bootstrap.php Tests
 

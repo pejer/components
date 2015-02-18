@@ -24,3 +24,4 @@ function autoload($className)
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__.'/../lib');
 # require_once __DIR__.'/../vendor/autoload.php';
 spl_autoload_register('autoload');
+date_default_timezone_set('Europe/Stockholm');
