@@ -1,0 +1,22 @@
+{
+  "name": "pejer/DHP_Karna",
+  "description": "Karna is the core in the system",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Henrik Pejer",
+      "email": "mr@henrikpejer.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "DHP_Karna\\core\\": "core",
+      "DHP_Karna\\modules\\": "modules"
+    }
+  },
+  "require": {
+    "ext-json": "*"
+  },
+  "require-dev": {}
+}
