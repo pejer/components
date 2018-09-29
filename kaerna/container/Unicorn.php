@@ -9,7 +9,8 @@ namespace DHP\kaerna\container;
 use DHP\kaerna\interfaces\ContainerInterface;
 
 const NOT_FOUND         = "f4fc80a9a3e948c88a5e7d960305ab7c";
-const SERVICE_INTERFACE = "DHP\\kaerna\\ServiceInterface";
+const SERVICE_INTERFACE = "DHP\\kaerna\\interfaces\\ServiceInterface";
+const PROXY_INTERFACE   = "DHP\\kaerna\\interfaces\\ProxyInterface";
 
 class Unicorn implements ContainerInterface
 {
@@ -31,6 +32,74 @@ class Unicorn implements ContainerInterface
 
         #$this->storage[get_class($this)] = &$this;
         $this->set($this);
+    }
+
+    public function set($object, $alias = null, $overwrite = false, ...$constructorArguments)
+    {
+        if (empty($alias)) {
+            switch (true) {
+                case is_string($object):
+                    $alias = $object;
+                    break;
+                case is_object($object):
+                    $alias = get_class($object);
+                    break;
+            }
+        }
+        $alias = $this->sanitizeName($alias);
+        if ($this->has($alias)) {
+            if ($overwrite) {
+                $this->storage[$alias] = $object;
+            }
+            return $this->storage[$alias];
+        }
+        $objectToSave = $object;
+        $aliases      = [];
+        if (is_string($object) && class_exists($object)) {
+            if (empty($constructorArguments)) {
+                $objectToSave = new Proxy($this, $object);
+            } else {
+                $objectToSave = new Proxy($this, $object, ...$constructorArguments);
+            }
+            $aliases[$object] = true;
+            $aliases[$alias]  = true;
+        }
+
+
+        #if (is_object($object)) {
+        $interfaces = class_implements($object);
+        // Only add interfaces that belong to objects that are services..
+        if (in_array(SERVICE_INTERFACE, class_implements($object))) {
+            $aliases[get_class($objectToSave)] = true;
+            // also add for interfaces it implements?
+            foreach ($interfaces as $interface) {
+                if ($interface != SERVICE_INTERFACE) {
+                    $aliases[$interface] = true;
+                }
+            }
+        }
+        #}
+        $this->storage[$alias] = $objectToSave;
+        foreach (array_keys($aliases) as $extraAlias) {
+            if ($extraAlias != $alias) {
+                $this->storage[$extraAlias] = &$this->storage[$alias];
+            }
+        }
+        return $objectToSave;
+    }
+
+    private function sanitizeName(string $name)
+    {
+        return '\\' . trim($name, '\\ ');
+    }
+
+    public function has($name)
+    {
+        $return = false;
+        if (is_string($name) && isset($this->storage[$name])) {
+            $return = true;
+        }
+        return $return;
     }
 
     public function get($name, ...$objectArgs)
@@ -57,8 +126,8 @@ class Unicorn implements ContainerInterface
     {
         $object = NOT_FOUND;
         // Is it an interface....?
-        if (null != ($classfrominterface = $this->getClassForInterface($name))) {
-            $name = $classfrominterface;
+        if (null != ($classFromInterface = $this->getClassForInterface($name))) {
+            $name = $classFromInterface;
         }
         switch (true) {
             case $this->has($name):
@@ -67,6 +136,9 @@ class Unicorn implements ContainerInterface
                     $object = $object();
                     unset($this->storage[$name]);
                     $this->set($object);
+                }
+                if (in_array(PROXY_INTERFACE, \class_implements($object))) {
+                    $object = $object->init();
                 }
                 break;
             case class_exists($name):
@@ -88,67 +160,15 @@ class Unicorn implements ContainerInterface
         return $object;
     }
 
-    public function has($name)
+    private function getClassForInterface(string $interface)
     {
-        $return = false;
-        if (is_string($name) && isset($this->storage[$name])) {
-            $return = true;
+        $return    = null;
+        $interface = $this->sanitizeName($interface);
+        if (isset($this->registry[$interface])) {
+            // TODO: What to do when there are more classes for the same interface?
+            $return = $this->registry[$interface][0];
         }
         return $return;
-    }
-
-    public function set($object, $alias = null, $overwrite = false)
-    {
-        if (empty($alias)) {
-            switch (true) {
-                case is_string($object):
-                    $alias = $object;
-                    break;
-                case is_object($object):
-                    $alias = get_class($object);
-                    break;
-            }
-        }
-        $alias = $this->sanitizeName($alias);
-        if ($this->has($alias)) {
-            if ($overwrite) {
-                $this->storage[$alias] = $object;
-            }
-            return $this->storage[$alias];
-        }
-        $objectToSave = $object;
-        $aliases      = [];
-        if (is_string($object) && class_exists($object)) {
-            $objectToSave     = $this->load($object);
-            $aliases[$object] = true;
-        }
-
-
-        if (is_object($object)) {
-            $interfaces = class_implements($object);
-            // Only add interfaces that belong to objects that are services..
-            if (in_array(SERVICE_INTERFACE, class_implements($object))) {
-                $aliases[get_class($objectToSave)] = true;
-                // also add for interfaces it implements?
-                foreach ($interfaces as $interface) {
-                    if ($interface != SERVICE_INTERFACE) {
-                        $aliases[$interface] = true;
-                    }
-                }
-            }
-        }
-        $this->storage[$alias] = $objectToSave;
-        foreach (array_keys($aliases) as $extraAlias) {
-            if ($extraAlias != $alias) {
-                $this->storage[$extraAlias] = &$this->storage[$alias];
-            }
-        }
-        return $objectToSave;
-    }
-
-    private function sanitizeName(string $name)
-    {
-        return '\\' . trim($name, '\\ ');
     }
 
     /**
@@ -179,17 +199,6 @@ class Unicorn implements ContainerInterface
                 }
             }
         } catch (\Exception $e) {
-        }
-        return $return;
-    }
-
-    private function getClassForInterface(string $interface)
-    {
-        $return = null;
-        $interface = $this->sanitizeName($interface);
-        if (isset($this->registry[$interface])) {
-            // TODO: What to do when there are more classes for the same interface?
-            $return = $this->registry[$interface][0];
         }
         return $return;
     }

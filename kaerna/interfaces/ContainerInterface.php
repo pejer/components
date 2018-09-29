@@ -15,7 +15,7 @@ interface ContainerInterface
      * @param string $name What we want to get.
      * @return null | mixed
      */
-    public function get($name);
+    public function get($name, ...$objectArgs);
 
     /**
      * Check if we have a certain thing in the container.

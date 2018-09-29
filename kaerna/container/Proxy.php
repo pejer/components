@@ -9,6 +9,7 @@
 namespace DHP\kaerna\container;
 
 use DHP\kaerna\interfaces\ContainerInterface;
+use DHP\kaerna\interfaces\ProxyInterface;
 
 /**
  * Class Proxy
@@ -21,7 +22,7 @@ use DHP\kaerna\interfaces\ContainerInterface;
  * In the long run it _would_ be sexy to generate a class that is compatible
  * with the class you want but would allow for some lazy-loading of the object.
  */
-class Proxy
+class Proxy implements ProxyInterface
 {
     /**
      * @var ContainerInterface
@@ -40,10 +41,14 @@ class Proxy
 
     public function __construct(
         ContainerInterface $container,
-        string $classToLoad
+        string $classToLoad,
+        ...$constructorArguments
     ) {
         $this->container   = $container;
         $this->classToLoad = $classToLoad;
+        if (!empty($constructorArguments)) {
+            $this->addMethodCall('__construct', ...$constructorArguments);
+        }
     }
 
     public function addMethodCall(string $method, ...$arguments)
@@ -75,16 +80,15 @@ class Proxy
         return $return;
     }
 
-    public function init()
-    {
-        $this->instantiate();
-        return $this->instance;
-    }
-
     private function instantiate()
     {
         if (!isset($this->instance)) {
-            $this->instance = $this->container->get($this->classToLoad);
+            if (!empty($this->methodCalls['__construct'])) {
+                $this->instance = $this->container->get($this->classToLoad, ...$this->methodCalls['__construct'][0]);
+            } else {
+                $this->instance = $this->container->get($this->classToLoad);
+            }
+
             # call methods
 
             foreach ($this->methodCalls as $method => $args) {
@@ -95,5 +99,11 @@ class Proxy
                 }
             }
         }
+    }
+
+    public function init()
+    {
+        $this->instantiate();
+        return $this->instance;
     }
 }

@@ -15,14 +15,24 @@ $reg->addExtensions(['php'])
 $registry = $reg->getRegistry();
 
 $container = new \DHP\kaerna\container\Unicorn([], $registry);
-$container->set(
+/*$container->set(
     function () {
         $request = \DHP\kaerna\request\Request::createFromEnvironment();
         return $request;
     },
     'DHP\kaerna\request\Request'
-);
+);*/
 
-$kernel = $container->get('DHP\kaerna\interfaces\KaernaInterface');
+#$kernel = $container->get('DHP\kaerna\interfaces\KaernaInterface');
+#$proxy = new \DHP\kaerna\container\Proxy($container, 'DHP\kaerna\request\Request','GET','/slam');
+$proxy = $container->set('DHP\kaerna\request\Request', 'request', false, 'GET', '/slam');
+#var_dump($proxy);
 
-var_dump($kernel());
+$req = $container->get('request');
+
+var_dump($req);
+
+
+# $req   = $proxy->init();
+
+var_dump($req->getUri());
