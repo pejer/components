@@ -13,8 +13,6 @@ $reg->addExtensions(['php'])
     );
 
 $registry = $reg->getRegistry();
-var_dump($registry);
-exit;
 
 $container = new \DHP\kaerna\container\Unicorn([], $registry);
 $container->set(
