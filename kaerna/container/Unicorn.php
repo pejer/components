@@ -7,6 +7,7 @@
 namespace DHP\kaerna\container;
 
 use DHP\kaerna\interfaces\ContainerInterface;
+use DHP\kaerna\interfaces\ProxyInterface;
 
 const NOT_FOUND         = "f4fc80a9a3e948c88a5e7d960305ab7c";
 const SERVICE_INTERFACE = "DHP\\kaerna\\interfaces\\ServiceInterface";
@@ -138,6 +139,7 @@ class Unicorn implements ContainerInterface
                     $this->set($object);
                 }
                 if (in_array(PROXY_INTERFACE, \class_implements($object))) {
+                    /** @var ProxyInterface $object */
                     $object = $object->init();
                 }
                 break;
