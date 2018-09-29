@@ -4,13 +4,13 @@
  * Date: 2018-09-22 21:26
  */
 
-namespace DHP_Karna\core\container;
+namespace DHP\kaerna\container;
 
-use DHP_Karna\core\kernel\ContainerInterface;
+use DHP\kaerna\ContainerInterface;
 use http\Exception\RuntimeException;
 
 const NOT_FOUND         = "f4fc80a9a3e948c88a5e7d960305ab7c";
-const SERVICE_INTERFACE = "DHP_Karna\\core\\kernel\\ServiceInterface";
+const SERVICE_INTERFACE = "DHP\\kaerna\\ServiceInterface";
 
 class Unicorn implements ContainerInterface
 {

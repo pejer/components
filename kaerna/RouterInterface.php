@@ -4,7 +4,7 @@
  * Date: 2018-09-22 19:36
  */
 
-namespace DHP_Karna\core\kernel;
+namespace DHP\kaerna;
 
 const METHOD_GET     = 'GET';
 const METHOD_POST    = 'POST';

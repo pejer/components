@@ -4,9 +4,9 @@
  * Date: 2018-09-22 22:05
  */
 
-namespace DHP_Karna\core;
+namespace DHP\kaerna;
 
-use DHP_Karna\core\kernel\MemcachedInterface;
+use DHP\kaerna\MemcachedInterface;
 
 class Memcached implements MemcachedInterface
 {

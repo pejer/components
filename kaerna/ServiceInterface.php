@@ -4,11 +4,11 @@
  * Date: 2018-09-22 19:40
  */
 
-namespace DHP_Karna\core\kernel;
+namespace DHP\kaerna;
 
 /**
  * Interface ServiceInterface
- * @package DHP_Karna\core\kernel
+ * @package DHP\core\kernel
  *
  * This is just so you can identify a service.
  *

@@ -2,27 +2,27 @@
 
 require_once 'autoload.php';
 
-$reg = new \DHP_Karna\core\container\Registry();
+$reg = new \DHP\kaerna\container\Registry();
 
 $reg->addExtensions(['php'])
     ->addRoots(
         [
-            __DIR__ . \DIRECTORY_SEPARATOR . 'core',
+            __DIR__ . \DIRECTORY_SEPARATOR . 'kaerna',
             __DIR__ . \DIRECTORY_SEPARATOR . 'modules'
         ]
     );
 
 $registry = $reg->getRegistry();
 
-$container = new \DHP_Karna\core\container\Unicorn([], $registry);
+$container = new \DHP\kaerna\container\Unicorn([], $registry);
 $container->set(
     function () {
-        $request = \DHP_Karna\core\request\Request::createFromEnvironment();
+        $request = \DHP\kaerna\request\Request::createFromEnvironment();
         return $request;
     },
-    'DHP_Karna\core\request\Request'
+    'DHP\kaerna\request\Request'
 );
 
-$kernel = $container->get('DHP_Karna\core\kernel\KernelInterface');
+$kernel = $container->get('DHP\kaerna\KaernaInterface');
 
 var_dump($kernel());

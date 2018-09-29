@@ -4,9 +4,9 @@
  * Date: 2018-09-22 20:29
  */
 
-namespace DHP_Karna\core\container;
+namespace DHP\kaerna\container;
 
-use DHP_Karna\core\kernel\RegistryInterface;
+use DHP\kaerna\RegistryInterface;
 
 class Registry implements RegistryInterface
 {

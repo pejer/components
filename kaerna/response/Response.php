@@ -6,10 +6,10 @@
  * Time: 07:21
  */
 
-namespace DHP_Karna\core\response;
+namespace DHP\kaerna\response;
 
-use DHP_Karna\core\kernel\RequestInterface;
-use DHP_Karna\core\kernel\ResponseInterface;
+use DHP\kaerna\RequestInterface;
+use DHP\kaerna\ResponseInterface;
 
 const STATUS_HEADERS = [
     "100" => "Continue",

@@ -4,9 +4,9 @@
  * Date: 2018-09-22 18:52
  */
 
-namespace DHP_Karna\core\kernel;
+namespace DHP\kaerna;
 
-interface KernelInterface extends ServiceInterface
+interface KaernaInterface extends ServiceInterface
 {
     public function __construct(ContainerInterface $container, RequestInterface $request, ResponseInterface $response);
 
@@ -16,7 +16,7 @@ interface KernelInterface extends ServiceInterface
 
     public function __invoke(): ResponseInterface;
 
-    public function addMiddleware(MiddlewareInterface $middleware): KernelInterface;
+    public function addMiddleware(MiddlewareInterface $middleware): KaernaInterface;
 
     public function addRoute(array $method, string $uri, string $name): RouterInterface;
 }

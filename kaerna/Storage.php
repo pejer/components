@@ -4,14 +4,14 @@
  * Date: 2018-09-22 21:29
  */
 
-namespace DHP_Karna\core;
+namespace DHP\kaerna;
 
 
-use DHP_Karna\core\kernel\StorageInterface;
+use DHP\kaerna\StorageInterface;
 
 /**
  * Class Storage
- * @package DHP_Karna\core
+ * @package DHP\core
  */
 class Storage implements StorageInterface
 {

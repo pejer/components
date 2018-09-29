@@ -4,7 +4,7 @@
  * Date: 2018-09-22 18:59
  */
 
-namespace DHP_Karna\core\kernel;
+namespace DHP\kaerna;
 
 
 interface ResponseInterface
