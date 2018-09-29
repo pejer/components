@@ -6,7 +6,7 @@
  * Time: 17:23
  */
 
-namespace DHP\kaerna\router;
+namespace DHP\kaerna\interfaces\router;
 
 use DHP\kaerna\MiddlewareInterface;
 use DHP\kaerna\RouteInterface;

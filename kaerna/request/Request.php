@@ -9,7 +9,7 @@
 namespace DHP\kaerna\request;
 
 
-use DHP\kaerna\RequestInterface;
+use DHP\kaerna\interfaces\RequestInterface;
 
 class Request implements RequestInterface
 {

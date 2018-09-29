@@ -6,7 +6,7 @@
  * Time: 07:21
  */
 
-namespace DHP\kaerna\response;
+namespace DHP\kaerna\interfaces\response;
 
 use DHP\kaerna\RequestInterface;
 use DHP\kaerna\ResponseInterface;

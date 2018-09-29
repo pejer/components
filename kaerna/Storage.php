@@ -7,7 +7,7 @@
 namespace DHP\kaerna;
 
 
-use DHP\kaerna\StorageInterface;
+use DHP\kaerna\interfaces\StorageInterface;
 
 /**
  * Class Storage

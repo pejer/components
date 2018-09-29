@@ -6,7 +6,7 @@
  * Time: 08:15
  */
 
-namespace DHP\kaerna\middleware;
+namespace DHP\kaerna\interfaces;
 
 
 use DHP\kaerna\ContainerInterface;

@@ -6,6 +6,13 @@
 
 namespace DHP\kaerna;
 
+use DHP\kaerna\interfaces\ContainerInterface;
+use DHP\kaerna\interfaces\KaernaInterface;
+use DHP\kaerna\interfaces\RequestInterface;
+use DHP\kaerna\interfaces\ResponseInterface;
+use DHP\kaerna\interfaces\MiddlewareInterface;
+use DHP\kaerna\interfaces\RouterInterface;
+
 /**
  * Class Kernel
  * @package DHP\core\kernel

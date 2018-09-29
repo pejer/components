@@ -6,8 +6,7 @@
 
 namespace DHP\kaerna\container;
 
-use DHP\kaerna\ContainerInterface;
-use http\Exception\RuntimeException;
+use DHP\kaerna\interfaces\ContainerInterface;
 
 const NOT_FOUND         = "f4fc80a9a3e948c88a5e7d960305ab7c";
 const SERVICE_INTERFACE = "DHP\\kaerna\\ServiceInterface";

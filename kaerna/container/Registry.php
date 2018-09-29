@@ -6,7 +6,7 @@
 
 namespace DHP\kaerna\container;
 
-use DHP\kaerna\RegistryInterface;
+use DHP\kaerna\interfaces\RegistryInterface;
 
 class Registry implements RegistryInterface
 {

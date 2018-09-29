@@ -6,7 +6,7 @@
 
 namespace DHP\kaerna;
 
-use DHP\kaerna\MemcachedInterface;
+use DHP\kaerna\interfaces\MemcachedInterface;
 
 class Memcached implements MemcachedInterface
 {

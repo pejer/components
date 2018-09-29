@@ -1,6 +1,6 @@
 <?php
 
-namespace DHP\kaerna;
+namespace DHP\kaerna\interfaces;
 
 /**
  * Interface RouteInterface

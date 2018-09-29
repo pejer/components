@@ -4,7 +4,7 @@
  * Date: 2018-09-22 18:52
  */
 
-namespace DHP\kaerna;
+namespace DHP\kaerna\interfaces;
 
 interface KaernaInterface extends ServiceInterface
 {

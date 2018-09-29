@@ -13,6 +13,8 @@ $reg->addExtensions(['php'])
     );
 
 $registry = $reg->getRegistry();
+var_dump($registry);
+exit;
 
 $container = new \DHP\kaerna\container\Unicorn([], $registry);
 $container->set(
@@ -23,6 +25,6 @@ $container->set(
     'DHP\kaerna\request\Request'
 );
 
-$kernel = $container->get('DHP\kaerna\KaernaInterface');
+$kernel = $container->get('DHP\kaerna\interfaces\KaernaInterface');
 
 var_dump($kernel());
