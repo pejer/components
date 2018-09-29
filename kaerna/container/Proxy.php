@@ -60,6 +60,16 @@ class Proxy implements ProxyInterface
         return $this;
     }
 
+    public function addConstructorArguments(...$arguments)
+    {
+        $this->setConstructorArguments(...$arguments);
+    }
+
+    private function setConstructorArguments(...$arguments)
+    {
+        $this->methodCalls['__construct'] = $arguments;
+    }
+
     /**
      * Handle when a method is called on the object.
      * @param $name
@@ -84,7 +94,7 @@ class Proxy implements ProxyInterface
     {
         if (!isset($this->instance)) {
             if (!empty($this->methodCalls['__construct'])) {
-                $this->instance = $this->container->get($this->classToLoad, ...$this->methodCalls['__construct'][0]);
+                $this->instance = $this->container->get($this->classToLoad, ...$this->methodCalls['__construct']);
             } else {
                 $this->instance = $this->container->get($this->classToLoad);
             }
