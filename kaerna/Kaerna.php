@@ -4,13 +4,13 @@
  * Date: 2018-09-22 18:51
  */
 
-namespace DHP_Karna\core\kernel;
+namespace DHP\kaerna;
 
 /**
  * Class Kernel
- * @package DHP_Karna\core\kernel
+ * @package DHP\core\kernel
  */
-class Kernel implements KernelInterface
+class Kaerna implements KaernaInterface
 {
     /**
      * @var ContainerInterface
@@ -53,7 +53,7 @@ class Kernel implements KernelInterface
         return $response;
     }
 
-    public function addMiddleware(MiddlewareInterface $middleware): KernelInterface
+    public function addMiddleware(MiddlewareInterface $middleware): KaernaInterface
     {
 
         if (is_string($middleware)) {

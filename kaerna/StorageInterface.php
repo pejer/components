@@ -4,7 +4,7 @@
  * Date: 2018-09-22 19:22
  */
 
-namespace DHP_Karna\core\kernel;
+namespace DHP\kaerna;
 
 interface StorageInterface extends \ArrayAccess
 {

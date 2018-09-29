@@ -6,10 +6,10 @@
  * Time: 17:23
  */
 
-namespace DHP_Karna\core\router;
+namespace DHP\kaerna\router;
 
-use DHP_Karna\core\kernel\MiddlewareInterface;
-use DHP_Karna\core\kernel\RouteInterface;
+use DHP\kaerna\MiddlewareInterface;
+use DHP\kaerna\RouteInterface;
 
 class Route implements RouteInterface
 {

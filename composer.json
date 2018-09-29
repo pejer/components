@@ -11,8 +11,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "DHP_Karna\\core\\": "core",
-      "DHP_Karna\\modules\\": "modules"
+      "DHP\\kaerna\\": "kaerna",
+      "DHP\\modules\\": "modules"
     }
   },
   "require": {

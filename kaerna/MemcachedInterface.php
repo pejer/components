@@ -4,7 +4,7 @@
  * Date: 2018-09-22 21:54
  */
 
-namespace DHP_Karna\core\kernel;
+namespace DHP\kaerna;
 
 
 interface MemcachedInterface

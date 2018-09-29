@@ -6,13 +6,13 @@
  * Time: 08:15
  */
 
-namespace DHP_Karna\core\middleware;
+namespace DHP\kaerna\middleware;
 
 
-use DHP_Karna\core\kernel\ContainerInterface;
-use DHP_Karna\core\kernel\MiddlewareInterface;
-use DHP_Karna\core\kernel\RequestInterface;
-use DHP_Karna\core\kernel\ResponseInterface;
+use DHP\kaerna\ContainerInterface;
+use DHP\kaerna\MiddlewareInterface;
+use DHP\kaerna\RequestInterface;
+use DHP\kaerna\ResponseInterface;
 
 class BodyParser implements MiddlewareInterface
 {

@@ -6,10 +6,10 @@
  * Time: 07:20
  */
 
-namespace DHP_Karna\core\request;
+namespace DHP\kaerna\request;
 
 
-use DHP_Karna\core\kernel\RequestInterface;
+use DHP\kaerna\RequestInterface;
 
 class Request implements RequestInterface
 {
