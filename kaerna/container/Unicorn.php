@@ -71,7 +71,9 @@ class Unicorn implements ContainerInterface
         $interfaces = class_implements($object);
         // Only add interfaces that belong to objects that are services..
         if (in_array(SERVICE_INTERFACE, class_implements($object))) {
-            $aliases[get_class($objectToSave)] = true;
+            if (!in_array(PROXY_INTERFACE, class_implements($objectToSave))) {
+                $aliases[get_class($objectToSave)] = true;
+            }
             // also add for interfaces it implements?
             foreach ($interfaces as $interface) {
                 if ($interface != SERVICE_INTERFACE) {
@@ -121,7 +123,6 @@ class Unicorn implements ContainerInterface
      *
      * @param string $name The name of what we should load.
      * @return mixed Will return DHP_core\component\container::NOT_FOUND if something is not found... duuuh.
-     * @throws \ReflectionException
      */
     private function load(string $name, ...$objectArgs)
     {

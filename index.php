@@ -26,7 +26,7 @@ $container = new \DHP\kaerna\container\Unicorn([], $registry);
 #$kernel = $container->get('DHP\kaerna\interfaces\KaernaInterface');
 #$proxy = new \DHP\kaerna\container\Proxy($container, 'DHP\kaerna\request\Request','GET','/slam');
 $proxy = $container->set('DHP\kaerna\request\Request', 'request');
-$proxy->addConstructorArguments('GET','/slam');
+$proxy->addConstructorArguments('GET', '/slam');
 #var_dump($proxy);
 
 $req = $container->get('request');
