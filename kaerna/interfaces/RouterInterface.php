@@ -23,5 +23,5 @@ interface RouterInterface extends ServiceInterface
 
     public function makeUri(array $parameters);
 
-    public function match(string $method, string $uri): ?RouteInterface;
+    public function match(string $method, string $uri, string $format = ''): ?RouteInterface;
 }

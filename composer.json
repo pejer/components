@@ -16,7 +16,8 @@
     }
   },
   "require": {
-    "ext-json": "*"
+    "ext-json": "*",
+    "symfony/yaml": "^4.1"
   },
   "require-dev": {}
 }

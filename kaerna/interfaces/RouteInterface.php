@@ -6,8 +6,10 @@ namespace DHP\kaerna\interfaces;
  * Interface RouteInterface
  *
  * Example of url:
- *  * blog/{id}/{?action}
+ *  * blog/{id}/{?action} <== so action is _optional_
+ *  * blog/{id:num} <== so id will need to be numbers
  *
+ * We should also support a format (?): .html etc...
  * @package DHP_core\component\interfaces
  */
 interface RouteInterface
@@ -35,4 +37,12 @@ interface RouteInterface
      * @return mixed
      */
     public function __invoke();
+
+    /**
+     * Check if this route matches the given uri.
+     *
+     * @param string $uri
+     * @return bool
+     */
+    public function match(string $uri);
 }

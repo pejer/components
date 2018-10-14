@@ -6,17 +6,25 @@
  * Time: 17:23
  */
 
-namespace DHP\kaerna\interfaces\router;
+namespace DHP\kaerna\router;
 
-use DHP\kaerna\MiddlewareInterface;
-use DHP\kaerna\RouteInterface;
+use DHP\kaerna\interfaces\RouteInterface;
+use DHP\kaerna\interfaces\MiddlewareInterface;
+use DHP\kaerna\Module;
 
-class Route implements RouteInterface
+class Route extends Module implements RouteInterface
 {
+
+    /** @var string uri that this route should react to */
+    private $uri;
+
+    /** @var callable The callable that should be triggered when this route is triggered */
+    private $callable;
 
     public function __construct(string $uri, callable $callable)
     {
-        parent::__construct($uri, $callable);
+        $this->uri      = $uri;
+        $this->callable = $callable;
     }
 
     /**
@@ -48,5 +56,16 @@ class Route implements RouteInterface
     public function __invoke()
     {
         // TODO: Implement __invoke() method.
+    }
+
+    /**
+     * Check if this route matches the given uri.
+     *
+     * @param string $uri
+     * @return bool
+     */
+    public function match(string $uri)
+    {
+        // TODO: Implement match() method.
     }
 }

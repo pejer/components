@@ -22,7 +22,7 @@ class Memcached implements MemcachedInterface
     private $connected;
 
     public function __construct(
-        string $instanceName = 'DHP_Karna',
+        string $instanceName = 'DHP_Kaerna',
         array $servers = [['127.0.0.1', 11211]],
         array $options = [
             \Memcached::OPT_CONNECT_TIMEOUT => 10,

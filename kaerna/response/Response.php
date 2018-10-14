@@ -10,6 +10,7 @@ namespace DHP\kaerna\response;
 
 use DHP\kaerna\interfaces\ResponseInterface;
 use DHP\kaerna\interfaces\RequestInterface;
+use DHP\kaerna\Module;
 
 const STATUS_HEADERS = [
     "100" => "Continue",
@@ -56,7 +57,7 @@ const STATUS_HEADERS = [
 ];
 
 
-class Response implements ResponseInterface
+class Response extends Module implements ResponseInterface
 {
 
     private $attributes = [];

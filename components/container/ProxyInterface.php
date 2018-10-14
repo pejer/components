@@ -6,8 +6,7 @@
  * Time: 17:36
  */
 
-namespace DHP\kaerna\interfaces;
-
+namespace DHP\components\container;
 
 /**
  * Class Proxy
@@ -19,6 +18,7 @@ namespace DHP\kaerna\interfaces;
  *
  * In the long run it _would_ be sexy to generate a class that is compatible
  * with the class you want but would allow for some lazy-loading of the object.
+ * @property-read string $classToLoad
  */
 interface ProxyInterface
 {

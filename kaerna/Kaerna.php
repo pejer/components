@@ -12,6 +12,7 @@ use DHP\kaerna\interfaces\RequestInterface;
 use DHP\kaerna\interfaces\ResponseInterface;
 use DHP\kaerna\interfaces\MiddlewareInterface;
 use DHP\kaerna\interfaces\RouterInterface;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class Kernel
@@ -19,18 +20,15 @@ use DHP\kaerna\interfaces\RouterInterface;
  */
 class Kaerna implements KaernaInterface
 {
-    /**
-     * @var ContainerInterface
-     */
+    /** @var ContainerInterface */
     private $container;
-    /**
-     * @var RequestInterface
-     */
+
+    /** @var RequestInterface */
     private $request;
-    /**
-     * @var ResponseInterface
-     */
+
+    /** @var ResponseInterface */
     private $response;
+
     /** @var null | string */
     private $currentMiddleware;
 
@@ -43,12 +41,12 @@ class Kaerna implements KaernaInterface
 
     public function __get($name)
     {
-        // TODO: Implement __get() method.
+        return $this->container->get($name);
     }
 
     public function __call($name, $arguments)
     {
-        // TODO: Implement __call() method.
+        return $this->container->get($name)(...$arguments);
     }
 
     public function __invoke(): ResponseInterface

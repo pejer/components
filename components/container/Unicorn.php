@@ -4,11 +4,9 @@
  * Date: 2018-09-22 21:26
  */
 
-namespace DHP\kaerna\container;
+namespace DHP\components\container;
 
-use DHP\kaerna\interfaces\ContainerInterface;
 use DHP\kaerna\interfaces\ModuleInterface;
-use DHP\kaerna\interfaces\ProxyInterface;
 
 const NOT_FOUND         = "f4fc80a9a3e948c88a5e7d960305ab7c";
 const SERVICE_INTERFACE = "DHP\\kaerna\\interfaces\\ServiceInterface";

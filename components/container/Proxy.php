@@ -6,7 +6,7 @@
  * Time: 13:46
  */
 
-namespace DHP\kaerna\container;
+namespace DHP\components\container;
 
 use DHP\kaerna\interfaces\ContainerInterface;
 use DHP\kaerna\interfaces\ModuleInterface;
