@@ -4,7 +4,7 @@
  * Date: 2018-10-06 17:55
  */
 
-namespace DHP\kaerna\interfaces;
+namespace DHP\components\module;
 
 /**
  * Class ModuleInterface
