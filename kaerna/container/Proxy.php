@@ -9,7 +9,6 @@
 namespace DHP\kaerna\container;
 
 use DHP\kaerna\interfaces\ContainerInterface;
-use DHP\kaerna\interfaces\ModuleInterface;
 use DHP\kaerna\interfaces\ProxyInterface;
 
 /**
