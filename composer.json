@@ -12,12 +12,14 @@
   "autoload": {
     "psr-4": {
       "DHP\\kaerna\\": "kaerna",
-      "DHP\\modules\\": "modules"
+      "DHP\\modules\\": "modules",
+      "DHP\\components\\": "components"
     }
   },
   "require": {
     "ext-json": "*",
-    "symfony/yaml": "^4.1"
+    "symfony/yaml": "^4.1",
+    "phpunit/phpunit": "7.4.0"
   },
   "require-dev": {}
 }
