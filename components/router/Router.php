@@ -6,13 +6,9 @@
  * Time: 17:23
  */
 
-namespace DHP\kaerna\router;
+namespace DHP\components\router;
 
-use DHP\kaerna\interfaces\RouterInterface;
-use DHP\kaerna\interfaces\MiddlewareInterface;
-use DHP\kaerna\interfaces\RouteInterface;
-
-class Router implements \DHP\kaerna\interfaces\RouterInterface
+class Router implements RouterInterface
 {
 
     public function __construct(string $uri, callable $callable)

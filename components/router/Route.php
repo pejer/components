@@ -6,11 +6,9 @@
  * Time: 17:23
  */
 
-namespace DHP\kaerna\router;
+namespace DHP\components\router;
 
-use DHP\kaerna\interfaces\RouteInterface;
-use DHP\kaerna\interfaces\MiddlewareInterface;
-use DHP\kaerna\Module;
+use DHP\components\Module;
 
 class Route extends Module implements RouteInterface
 {
