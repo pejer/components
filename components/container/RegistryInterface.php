@@ -4,7 +4,7 @@
  * Date: 2018-09-22 21:21
  */
 
-namespace DHP\kaerna\interfaces;
+namespace DHP\components\container;
 
 interface RegistryInterface
 {

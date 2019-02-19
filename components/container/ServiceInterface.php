@@ -4,7 +4,7 @@
  * Date: 2018-09-22 19:40
  */
 
-namespace DHP\kaerna\interfaces;
+namespace DHP\components\container;
 
 /**
  * Interface ServiceInterface

@@ -7,7 +7,6 @@
 namespace DHP\components\module;
 
 use DHP\kaerna\interfaces\ContainerInterface;
-use ModuleInterface;
 
 abstract class Module implements ModuleInterface
 {
@@ -19,7 +18,7 @@ abstract class Module implements ModuleInterface
      *
      * @param string $event     The event to trigger
      * @param mixed  ...$params The params that should be provided
-     * 
+     *
      * @return mixed
      */
     public function eventTrigger(string $event, &...$params)

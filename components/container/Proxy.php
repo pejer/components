@@ -4,13 +4,11 @@
  * User: henrikpejer
  * Date: 2018-09-29
  * Time: 13:46
+ *
+ * Uhm is this even registering in the nedtreeVCS-thingee? What is the vcs-thingee?
  */
 
 namespace DHP\components\container;
-
-use DHP\kaerna\interfaces\ContainerInterface;
-use DHP\kaerna\interfaces\ModuleInterface;
-use DHP\kaerna\interfaces\ProxyInterface;
 
 /**
  * Class Proxy
@@ -48,16 +46,18 @@ class Proxy implements ProxyInterface
         $this->container   = $container;
         $this->classToLoad = $classToLoad;
         if (!empty($constructorArguments)) {
-            $this->addMethodCall('__construct', ...$constructorArguments);
+            $this->setConstructorArguments(...$constructorArguments);
         }
     }
 
     public function addMethodCall(string $method, ...$arguments)
     {
+
         if (!isset($this->methodCalls[$method])) {
             $this->methodCalls[$method] = [];
         }
         $this->methodCalls[$method][] = $arguments;
+
         return $this;
     }
 
@@ -81,7 +81,7 @@ class Proxy implements ProxyInterface
     {
         $this->instantiate();
         # check if method exists (?)
-        if (in_array($name, get_class_methods($name))) {
+        if (in_array($name, get_class_methods($this->instance))) {
             if (empty($arguments)) {
                 $return = $this->instance->$name();
             } else {

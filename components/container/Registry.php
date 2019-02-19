@@ -6,8 +6,6 @@
 
 namespace DHP\components\container;
 
-use DHP\kaerna\interfaces\RegistryInterface;
-
 class Registry implements RegistryInterface
 {
     private $roots = [];

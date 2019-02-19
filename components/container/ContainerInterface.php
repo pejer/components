@@ -6,7 +6,7 @@
 
 namespace DHP\components\container;
 
-interface ContainerInterface
+interface ContainerInterface extends ServiceInterface
 {
     /**
      * Returns the thing if it exists in the container.

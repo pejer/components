@@ -6,11 +6,9 @@
  * Time: 07:21
  */
 
-namespace DHP\kaerna\response;
+namespace DHP\components\response;
 
-use DHP\kaerna\interfaces\ResponseInterface;
-use DHP\kaerna\interfaces\RequestInterface;
-use DHP\kaerna\Module;
+use DHP\components\request\RequestInterface;
 
 const STATUS_HEADERS = [
     "100" => "Continue",
@@ -57,7 +55,7 @@ const STATUS_HEADERS = [
 ];
 
 
-class Response extends Module implements ResponseInterface
+class Response implements ResponseInterface
 {
 
     private $attributes = [];
@@ -91,6 +89,7 @@ class Response extends Module implements ResponseInterface
 
     public function getBody()
     {
+        return $this->body;
     }
 
     /**
@@ -149,6 +148,14 @@ class Response extends Module implements ResponseInterface
         return $return;
     }
 
+
+    /**
+     * setAttributes
+     *
+     * This will set attributes.
+     *
+     * @param array $attributes
+     */
     public function setAttributes(array $attributes)
     {
         $that             = clone $this;
@@ -172,5 +179,4 @@ class Response extends Module implements ResponseInterface
         }
         $this->headersSent = true;
     }
-
 }

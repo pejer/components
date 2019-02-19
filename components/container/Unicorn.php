@@ -6,11 +6,9 @@
 
 namespace DHP\components\container;
 
-use DHP\kaerna\interfaces\ModuleInterface;
-
 const NOT_FOUND         = "f4fc80a9a3e948c88a5e7d960305ab7c";
-const SERVICE_INTERFACE = "DHP\\kaerna\\interfaces\\ServiceInterface";
-const PROXY_INTERFACE   = "DHP\\kaerna\\interfaces\\ProxyInterface";
+const SERVICE_INTERFACE = "DHP\\components\\container\\ServiceInterface";
+const PROXY_INTERFACE   = "DHP\\components\\container\\ProxyInterface";
 
 class Unicorn implements ContainerInterface
 {
@@ -60,6 +58,10 @@ class Unicorn implements ContainerInterface
                     $alias = get_class($object);
                     break;
             }
+        } else {
+            if (\is_object($object)) {
+                $aliases[\get_class($object)] = 1;
+            }
         }
 
         $alias = $this->sanitizeName($alias);
@@ -77,17 +79,17 @@ class Unicorn implements ContainerInterface
 
         if (is_string($object) && class_exists($object)) {
             if (empty($constructorArguments)) {
-                $objectToSave = new Proxy($this, $object);
-                if ($object == '\DHP\kaerna\response\Response') {
-                    # Check constructor for arguments - and load them.
-                    $constructorArguments = $this->getConstructorArguments($object);
+                $objectToSave         = new Proxy($this, $object);
+                $constructorArguments = $this->getConstructorArguments($object);
 
-                    $args = [];
-                    foreach ($constructorArguments as $arg) {
-                        $args[] = $this->get($arg);
+                $args = [];
+                foreach ($constructorArguments as $arg) {
+                    if ($arg == null) {
+                        continue;
                     }
-                    $objectToSave->addConstructorArguments(...$args);
+                    $args[] = $this->get($arg);
                 }
+                $objectToSave->addConstructorArguments(...$args);
             } else {
                 $objectToSave = new Proxy($this, $object, ...$constructorArguments);
             }
@@ -118,7 +120,7 @@ class Unicorn implements ContainerInterface
 
         foreach (array_keys($aliases) as $extraAlias) {
             if ($extraAlias != $alias) {
-                $this->aliases[$extraAlias] = $alias;
+                $this->aliases[$this->sanitizeName($extraAlias)] = $alias;
             }
         }
 
@@ -138,6 +140,48 @@ class Unicorn implements ContainerInterface
             if (isset($this->aliases[$sanitize_name])) {
                 $return = $this->aliases[$sanitize_name];
             }
+        }
+        return $return;
+    }
+
+    /**
+     * This will get the array of constructor arguments you should instantiate.
+     *
+     * @param string $class The class to get the constructor arguments for.
+     * @return array The constructor arguments for the object to instantiate.
+     */
+    private function getConstructorArguments(string $class)
+    {
+        $return = [];
+        try {
+            $constructor = new \ReflectionMethod($class, '__construct');
+            foreach ($constructor->getParameters() as $arg) {
+                // TODO: What to do when there are no hints.
+                // TODO: What to do when the hints is for a class.
+                // TODO: Can we make this into proxies?
+                $argClass = $arg->getClass();
+                if (!empty($argClass)) {
+                    $argClass = $argClass->name;
+                    $ref      = new \ReflectionClass($argClass);
+                    if ($ref->isInterface()) {
+                        $argClass = $this->getClassForInterface($this->sanitizeName($ref->name));
+                    }
+                    $return[] = $argClass;
+                } else {
+                    $return[] = null;
+                }
+            }
+        } catch (\Exception $e) {
+        }
+        return $return;
+    }
+
+    private function getClassForInterface(string $interface)
+    {
+        $return = null;
+        if (isset($this->registry[$interface])) {
+            // TODO: What to do when there are more classes for the same interface?
+            $return = $this->registry[$interface][0];
         }
         return $return;
     }
@@ -174,23 +218,14 @@ class Unicorn implements ContainerInterface
                 $object = $this->storage[$name];
                 if (is_callable($object)) {
                     $object = $object();
-                    // add Container
-                    # if this thing extends Abstract interface, lets call that method
-                    if (in_array('DHP\kaerna\interfaces\ModuleInterface', class_implements($object))) {
-                        /** @var ModuleInterface $object */
-                        $object->setContainer($this);
-                    }
                     $this->set($object, $name, true);
                 }
                 if (in_array(PROXY_INTERFACE, \class_implements($object))) {
                     /** @var ProxyInterface $object */
-                    $object = $object->init();
-                    // add Container
-                    # if this thing extends Abstract interface, lets call that method
-                    if (in_array('DHP\kaerna\interfaces\ModuleInterface', class_implements($object))) {
-                        /** @var ModuleInterface $object */
-                        $object->setContainer($this);
+                    if (!empty($objectArgs)) {
+                        $object->addConstructorArguments(...$objectArgs);
                     }
+                    $object = $object->init();
                     $this->set($object, $name, true);
                 }
                 break;
@@ -207,60 +242,12 @@ class Unicorn implements ContainerInterface
                     }
                 }
                 $object = new $name(...$constructorArgs);
-                // add Container
-                # if this thing extends Abstract interface, lets call that method
-                if (in_array('DHP\kaerna\interfaces\ModuleInterface', class_implements($object))) {
-                    /** @var ModuleInterface $object */
-                    $object->setContainer($this);
-                }
                 if (in_array(SERVICE_INTERFACE, class_implements($object))) {
                     $this->storage[$name] = $object;
                 }
                 break;
         }
         return $object;
-    }
-
-    private function getClassForInterface(string $interface)
-    {
-        $return = null;
-        if (isset($this->registry[$interface])) {
-            // TODO: What to do when there are more classes for the same interface?
-            $return = $this->registry[$interface][0];
-        }
-        return $return;
-    }
-
-    /**
-     * This will get the array of constructor arguments you should instantiate.
-     *
-     * @param string $class The class to get the constructor arguments for.
-     * @return array The constructor arguments for the object to instantiate.
-     */
-    private function getConstructorArguments(string $class)
-    {
-        $return = [];
-        try {
-            $constructor = new \ReflectionMethod($class, '__construct');
-            foreach ($constructor->getParameters() as $arg) {
-                // TODO: What to do when there are no hints.
-                // TODO: What to do when the hints is for a class.
-                // TODO: Can we make this into proxies?
-                $argClass = $arg->getClass();
-                if (!empty($argClass)) {
-                    $argClass = $argClass->name;
-                    $ref      = new \ReflectionClass($argClass);
-                    if ($ref->isInterface()) {
-                        $argClass = $this->getClassForInterface($this->sanitizeName($ref->name));
-                    }
-                    $return[] = $argClass;
-                } else {
-                    $return[] = null;
-                }
-            }
-        } catch (\Exception $e) {
-        }
-        return $return;
     }
 
     public function resolve($name)

@@ -4,7 +4,9 @@
  * Date: 2018-09-22 18:58
  */
 
-namespace DHP\kaerna\interfaces;
+namespace DHP\components\request;
+
+use DHP\components\container\ServiceInterface;
 
 interface RequestInterface extends ServiceInterface
 {

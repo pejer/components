@@ -4,7 +4,7 @@
  * Date: 2018-09-22 18:59
  */
 
-namespace DHP\kaerna\interfaces;
+namespace DHP\components\response;
 
 
 interface ResponseInterface
