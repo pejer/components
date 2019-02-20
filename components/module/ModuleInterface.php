@@ -6,6 +6,8 @@
 
 namespace DHP\components\module;
 
+use DHP\components\container\ContainerInterface;
+
 /**
  * Class ModuleInterface
  * @package DHP\kaerna\interfaces

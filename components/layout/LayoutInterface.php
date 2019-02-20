@@ -2,6 +2,8 @@
 
 namespace DHP\components\layout;
 
+use DHP\components\container\ServiceInterface;
+
 /**
  *  Interface LayoutInterface
  *

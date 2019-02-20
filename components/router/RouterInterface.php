@@ -6,6 +6,7 @@
 
 namespace DHP\components\router;
 
+use DHP\components\container\ServiceInterface;
 const METHOD_GET     = 'GET';
 const METHOD_POST    = 'POST';
 const METHOD_PUT     = 'PUT';

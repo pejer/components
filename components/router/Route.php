@@ -8,7 +8,7 @@
 
 namespace DHP\components\router;
 
-use DHP\components\Module;
+use DHP\components\module\Module;
 
 class Route extends Module implements RouteInterface
 {

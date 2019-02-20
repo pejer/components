@@ -6,8 +6,6 @@
 
 namespace DHP\components\event;
 
-use EventInterface;
-
 class Event implements EventInterface
 {
     private $events = [];

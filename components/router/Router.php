@@ -31,7 +31,7 @@ class Router implements RouterInterface
         // TODO: Implement makeUri() method.
     }
 
-    public function match(string $method, string $uri): ?RouteInterface
+    public function match(string $method, string $uri, string $format = ''): ?RouteInterface
     {
         // TODO: Implement match() method.
     }

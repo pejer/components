@@ -6,7 +6,8 @@
 
 namespace DHP\components\module;
 
-use DHP\kaerna\interfaces\ContainerInterface;
+
+use DHP\components\container\ContainerInterface;
 
 abstract class Module implements ModuleInterface
 {
