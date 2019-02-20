@@ -1,10 +1,8 @@
 <?php
 
-namespace DHP_core\component\layout;
+namespace DHP\components\layout;
 
-use DHP_core\component\interfaces\LayoutCompileInterface;
-
-use DHP_core\component\layout\Tokenizer;
+use DHP\component\layout\Tokenizer;
 
 /**
  * Class Compile

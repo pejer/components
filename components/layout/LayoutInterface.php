@@ -1,6 +1,6 @@
 <?php
 
-namespace DHP\kaerna\interfaces;
+namespace DHP\components\layout;
 
 /**
  *  Interface LayoutInterface

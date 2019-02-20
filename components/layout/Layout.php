@@ -1,6 +1,6 @@
 <?php
 
-namespace DHP_core\component\layout;
+namespace DHP\components\layout;
 
 use DHP_core\component\container\Unicorn;
 use DHP_core\component\interfaces\UnicornInterface;

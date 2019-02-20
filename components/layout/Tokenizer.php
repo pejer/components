@@ -1,6 +1,6 @@
 <?php
 
-namespace DHP_core\component\layout;
+namespace DHP\components\layout;
 
 
 class Tokenizer

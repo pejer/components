@@ -1,11 +1,7 @@
 <?php
 
-namespace DHP_core\component\layout;
+namespace DHP\components\layout;
 
-use DHP_core\component\interfaces\LayoutViewInterface;
-use DHP_core\component\interfaces\RequestInterface;
-use DHP_core\component\interfaces\ResponseInterface;
-use DHP_core\component\interfaces\UnicornInterface;
 
 class View implements LayoutViewInterface
 {

@@ -6,7 +6,7 @@
  * Time: 08:35
  */
 
-namespace DHP\kaerna\interfaces;
+namespace DHP\components\layout;
 
 /**
  * Interface LayoutCompileInterface
