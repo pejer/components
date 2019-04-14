@@ -2,7 +2,6 @@
 
 namespace DHP\components\layout;
 
-
 class Tokenizer
 {
 

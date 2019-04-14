@@ -2,7 +2,7 @@
 
 namespace DHP\components\layout;
 
-use DHP\component\layout\Tokenizer;
+use DHP\components\layout\Tokenizer;
 
 /**
  * Class Compile
@@ -163,7 +163,6 @@ EOF;
 foreach (\$$collection as \$$var): ++\$loop->index; ++\$loop->zeroIndex;\$loop->first = \$loop->index == 1?true:false;\$loop->last = \$loop->index == \$loop->length? true: false; ?>
 
 EOF;
-
     }
 
     /**
