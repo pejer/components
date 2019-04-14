@@ -14,7 +14,7 @@ class Tokenizer
     const CODE_LOGIC_END = 5;
     const CODE_LOGIC_FOR = 6;
     const CODE_LOGIC_END_FOR = 7;
-
+    const CODE_LOGIC_ELSE = 8;
     protected $conf = [
         'comment'  => ['{#', '#}'],
         'logic'    => ['{%', '%}'],
@@ -131,6 +131,9 @@ class Tokenizer
                 break;
             case 'for':
                 $this->addToken(self::CODE_LOGIC_FOR, $match[2]);
+                break;
+            case 'else':
+                $this->addToken(self::CODE_LOGIC_ELSE, $match);
                 break;
             case 'endif':
             case 'endfor':

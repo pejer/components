@@ -2,7 +2,6 @@
 
 namespace DHP\components\layout;
 
-use DHP\components\container\ServiceInterface;
 
 /**
  *  Interface LayoutInterface
@@ -10,7 +9,7 @@ use DHP\components\container\ServiceInterface;
  * This is a bridge between the layout engine you choose and the rest of the application.
  * @package DHP\kaerna\interface
  */
-interface LayoutInterface extends ServiceInterface
+interface LayoutInterface
 {
     /**
      * LayoutInterface constructor.

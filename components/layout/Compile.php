@@ -2,8 +2,6 @@
 
 namespace DHP\components\layout;
 
-use DHP\components\layout\Tokenizer;
-
 /**
  * Class Compile
  *
@@ -20,7 +18,8 @@ class Compile implements LayoutCompileInterface
         Tokenizer::CODE_TYPE_COMMENT  => 'compileComment',
         Tokenizer::CODE_LOGIC_IF      => 'compileLogicIf',
         Tokenizer::CODE_LOGIC_END     => 'compileLogicEnd',
-        Tokenizer::CODE_LOGIC_FOR     => 'compileLogicFor'
+        Tokenizer::CODE_LOGIC_FOR     => 'compileLogicFor',
+        Tokenizer::CODE_LOGIC_ELSE    => 'compileLogicElse'
     ];
 
     public function __construct()
@@ -130,6 +129,10 @@ EOF;
         }
         $return[] = '';
         return '<?php if (' . trim(implode(' ', $return)) . "): ?>\n";
+    }
+
+    protected function compileLogicElse($tokenData) {
+      return "<?php else: ?>\n";
     }
 
     protected function compileLogicEnd($tokenData)

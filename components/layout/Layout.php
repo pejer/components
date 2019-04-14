@@ -32,7 +32,7 @@ class Layout
 
     public function render($template, $data = [])
     {
-        $compiledTemplate = $this->compile($template, false);
+        $compiledTemplate = $this->compile($template, true);
         $view             = new View($this);
         $return           = $view->render($compiledTemplate, $data);
         unset($view);
@@ -46,18 +46,18 @@ class Layout
             // Todo: handle multiple paths
             $templatePath = $this->config['layouts'][0] . $path;
             $tokenizer    = new Tokenizer($templatePath);
-            $time_start   = Util::microtimeFloat();
-            $mem_before   = Util::getMemoryUsage();
+            $time_start   = \microtime(true);
+            $mem_before   = \memory_get_usage();
             $data         = $this->compiler->compile($tokenizer->tokenize());
-            $mem_used     = Util::formatByte(Util::getMemoryUsage() - $mem_before);
-            $time_taken   = sprintf('%01.4f', (Util::microtimeFloat() - $time_start));
+            $mem_used     = sprintf('%01.2f %s',(\memory_get_usage() - $mem_before) / 1024, 'Kb');
+            $time_taken   = sprintf('%01.4f %s', (microtime(true) - $time_start),'s');
             $date         = \date('Y-m-d H:i:s');
             $data         .= <<<EOF
 <?php
 /*
 Template     : {$path}
 Date         : {$date}
-Generated in : {$time_taken}s
+Generated in : {$time_taken}
 Memory usage : {$mem_used}
 
 FILE END*/
@@ -75,6 +75,6 @@ EOF;
 
     protected function writeTemplate($template, $data)
     {
-        Util::writeFile($this->getCompiledPath($template), $data);
+        \file_put_contents($this->getCompiledPath($template), $data);
     }
 }
