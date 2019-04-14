@@ -20,7 +20,10 @@ class Compile implements LayoutCompileInterface
         Tokenizer::CODE_LOGIC_END     => 'compileLogicEnd',
         Tokenizer::CODE_LOGIC_FOR     => 'compileLogicFor',
         Tokenizer::CODE_LOGIC_ELSE    => 'compileLogicElse'
-    ];
+      ];
+
+    protected $logicStates = [];
+    protected $logicStatesIndex = -1;
 
     public function __construct()
     {
@@ -128,23 +131,34 @@ EOF;
             }
         }
         $return[] = '';
+        $this->logicStateAppend('if');
         return '<?php if (' . trim(implode(' ', $return)) . "): ?>\n";
     }
 
     protected function compileLogicElse($tokenData) {
-      return "<?php else: ?>\n";
+      switch($this->logicStateGetCurrent()) {
+          case 'forloop':
+               $return = "<?php endforeach; else: ?>";
+          break;
+          default:
+                $return = "<?php else: ?>\n";
+          break;
+      }
+      $this->logicStateAppend('else');
+      return $return;
     }
 
     protected function compileLogicEnd($tokenData)
     {
-        switch ($tokenData) {
-            case 'endfor':
-                $tokenData = 'endforeach';
+        switch ($this->logicStateGetCurrent()) {
+            case 'else':
+                $tokenData = 'endif';
                 break;
             default:
                 break;
         }
-        return '<?php ' . $tokenData . '; ?>' . "\n";
+        $this->logicStateRemove();
+        return '<?php ' . $tokenData . ';?>' . "\n";
     }
 
     protected function compileLogicFor($tokenData)
@@ -152,9 +166,11 @@ EOF;
         list($var, $collection) = explode('in', $tokenData);
         $var        = trim($var);
         $collection = trim($collection);
+        $this->logicStateAppend('forloop');
         return <<<EOF
 <?php 
 
+if (!empty(\$$collection) && count(\$$collection) > 0) :
 \$loop = (object) [
     'index' => 0,
     'zeroIndex' => -1,
@@ -163,13 +179,13 @@ EOF;
     'last' => false,
     'length' => count(\$$collection)
 ];
-foreach (\$$collection as \$$var): ++\$loop->index; ++\$loop->zeroIndex;\$loop->first = \$loop->index == 1?true:false;\$loop->last = \$loop->index == \$loop->length? true: false; ?>
+foreach (\$$collection as \$$var): ++\$loop->index; ++\$loop->zeroIndex;\$loop->first = \$loop->index == 1?true:false;\$loop->last = \$loop->index == \$loop->length? true: false;?>
 
 EOF;
     }
 
     /**
-     * @param $tokenData
+     * @param mixed $tokenData The token data.
      * @return string
      *
      * @codingStandardIgnore
@@ -181,5 +197,33 @@ EOF;
 <!-- {$tokenData} -->
 <?php endif; ?>
 EOF;
+    }
+
+    protected function logicStateAppend($state)
+    {
+        $this->logicStates[] = $state;
+        ++$this->logicStatesIndex;
+    }
+
+    protected function logicStateGetCurrent()
+    {
+        $return = null;
+        if ($this->logicStatesIndex>-1
+            && !empty($this->logicStates[$this->logicStatesIndex])
+        ) {
+            $return = $this->logicStates[$this->logicStatesIndex];
+        }
+        return $return;
+    }
+
+    protected function logicStateGetPrevious()
+    {
+        return $this->logicStates[$this->logicStatesIndex-1];
+    }
+
+    protected function logicStateRemove()
+    {
+        \array_pop($this->logicStates);
+        --$this->logicStatesIndex;
     }
 }

@@ -123,7 +123,8 @@ class Tokenizer
     protected function codeTypeLogic()
     {
         $pattern = '/^(\S+)\s(.*)' . preg_quote('%}', '/') . '/U';
-        preg_match($pattern, trim(substr($this->code, $this->pos)), $match);
+        $line = trim(substr($this->code, $this->pos));
+        preg_match($pattern, $line, $match);
         // $match[1] is what logic operation that it is
         switch (strtolower($match[1])) {
             case 'if':
