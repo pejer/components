@@ -135,25 +135,28 @@ EOF;
         return '<?php if (' . trim(implode(' ', $return)) . "): ?>\n";
     }
 
-    protected function compileLogicElse($tokenData) {
+    protected function compileLogicElse($tokenData) { 
       switch($this->logicStateGetCurrent()) {
           case 'forloop':
                $return = "<?php endforeach; else: ?>";
+              $this->logicStateRemove();
           break;
           default:
                 $return = "<?php else: ?>\n";
           break;
       }
-      $this->logicStateAppend('else');
       return $return;
     }
 
     protected function compileLogicEnd($tokenData)
     {
-        switch ($this->logicStateGetCurrent()) {
-            case 'else':
+      switch ($this->logicStateGetCurrent()) {
+            case 'if':
                 $tokenData = 'endif';
                 break;
+            case 'forloop':
+              $tokenData = 'endforeach; endif';
+              $this->logicStateRemove();
             default:
                 break;
         }
@@ -166,6 +169,7 @@ EOF;
         list($var, $collection) = explode('in', $tokenData);
         $var        = trim($var);
         $collection = trim($collection);
+        $this->logicStateAppend('if');
         $this->logicStateAppend('forloop');
         return <<<EOF
 <?php 
@@ -218,9 +222,14 @@ EOF;
 
     protected function logicStateGetPrevious()
     {
-        return $this->logicStates[$this->logicStatesIndex-1];
+        $return = null;
+        if ($this->logicStatesIndex>0
+          && !empty($this->logicStates[$this->logicStatesIndex-1])
+        ) {
+            $return = $this->logicStates[$this->logicStatesIndex-1];
+        }
+        return $return;
     }
-
     protected function logicStateRemove()
     {
         \array_pop($this->logicStates);
