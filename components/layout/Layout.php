@@ -2,10 +2,6 @@
 
 namespace DHP\components\layout;
 
-use DHP_core\component\container\Unicorn;
-use DHP_core\component\interfaces\UnicornInterface;
-use DHP_core\component\util\Util;
-
 /**
  *
  * Class Layout
@@ -25,19 +21,13 @@ class Layout
 {
     protected $config = [];
     protected $view   = null;
-    /**
-     * @var UnicornInterface
-     */
-    protected $unicorn;
     protected $compiler;
 
     public function __construct(
-        array $config,
-        UnicornInterface $unicorn
+        array $config
     ) {
         $this->compiler = new Compile();
         $this->config   = $config;
-        $this->unicorn  = $unicorn;
     }
 
     public function render($template, $data = [])
