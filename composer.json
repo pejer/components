@@ -1,6 +1,4 @@
 {
-  "name": "pejer/DHP_Karna",
-  "description": "Karna is the core in the system",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
@@ -19,7 +17,7 @@
   "require": {
     "ext-json": "*",
     "symfony/yaml": "^4.1",
-    "phpunit/phpunit": "7.4.0"
+    "phpunit/phpunit": "9.5"
   },
   "require-dev": {}
 }
