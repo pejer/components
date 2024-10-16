@@ -18,11 +18,10 @@ class Scope
 
   /**
    * @param mixed $object 
-   * @param string $alias 
-   * @param mixed ...$furtherAliases 
+   * @param array $alias 
    * @return void 
    */
-  public function store(mixed $object, ...$aliases)
+  public function store(mixed $object, array $aliases = [])
   {
     $this->storage[] = $object;
     end($this->storage);

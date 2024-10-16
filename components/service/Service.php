@@ -7,6 +7,7 @@ namespace DHP\components\service;
 class Service
 {
   private Scope $scope_storage;
+  private ?array $prepareObject = null;
 
   public function __construct(?Scope $existingScope = null)
   {
@@ -16,32 +17,78 @@ class Service
     };
   }
 
+  public function prepareSingleton(string $class): self
+  {
+    if ($this->prepareObject != null) {
+      $this->store();
+    }
+    $this->prepareObject = [
+      'type'    => 'singleton',
+      'class'   => $class,
+      'args'    => [],
+      'aliases' => []
+    ];
+    return $this;
+  }
+
+  public function withArgs(...$args): self
+  {
+    $this->prepareObject['args'] = $args;
+    return $this;
+  }
+
+  public function withAliases(array $aliases): self
+  {
+    $this->prepareObject['aliases'] = $aliases;
+    return $this;
+  }
+
+  public function store(): bool
+  {
+    $this->add(
+      $this->prepareObject['type'],
+      $this->prepareObject['class'],
+      $this->prepareObject['aliases'],
+      $this->prepareObject['args']
+    );
+    $this->prepareObject = null;
+    return true;
+  }
+
+  // $service->prepareSingleton()->withArgs()->withAliases();
+
+
+
   public function clone()
   {
     return clone $this;
   }
 
   // TODO: Handle args provided
-  public function load(string $class)
+  public function load(string $class = null, ?array $args = null)
   {
+    // if ($class == null && $this->prepareObject != null) {
+    //   $class = $this->prepareObject['class'];
+    //   $this->store();
+    // }
     $obj = $this->scope_storage->get($class);
     if ($obj == STATE::NOT_SET && \class_exists($class)) {
-      $this->addSingleton($class);
+      $this->addSingleton($class, [], $args);
       $obj = $this->scope_storage->get($class);
     }
-    return $obj();
+    return $obj($args);
   }
 
-  public function addSingleton(mixed $object, ?string $alias = null, array ...$args)
+  public function addSingleton(mixed $object, array $alias = [], ?array $args = null)
   {
     $this->add('singleton', $object, $alias, $args);
   }
-  public function addTransient(mixed $object, ?string $alias = null, array ...$args)
+  public function addTransient(mixed $object, array $alias = [], ?array $args = null)
   {
     $this->add('transient', $object, $alias, $args);
   }
 
-  private function add(string $type, mixed $object, ?string $alias = null, array ...$args)
+  private function add(string $type, mixed $object, array $alias, ?array $args = null)
   {
     $proxy = match ($type) {
       "singleton" => new Singleton($this, $object, $args),
@@ -54,7 +101,7 @@ class Service
     foreach ($this->getAliases($object) as $alias) {
       $aliases[] = $alias;
     }
-    $this->scope_storage->store($proxy, ...$aliases);
+    $this->scope_storage->store($proxy, $aliases);
   }
   private function getAliases(string|object $id)
   {

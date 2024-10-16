@@ -8,9 +8,9 @@ abstract class Proxy
 {
   protected $args;
   protected $obj;
-  public function __construct(private Service $service, private string $class,  array ...$args)
+  public function __construct(private Service $service, private string $class, ?array $args = [])
   {
-    $this->args = $args;
+    $this->args = empty($args) ? [] : $args;
   }
 
   protected function getConstructor(): ?\ReflectionMethod
@@ -36,7 +36,7 @@ abstract class Proxy
         case !empty($argValue):
           # If the provided arg is a callable
           # AND the type is not callable
-          # öthen we evaluate the callable and use the return as argument value
+          # then we evaluate the callable and use the return as argument value
           if (is_callable($argValue) && $type != "callable") {
             $argValue = $argValue();
           }
@@ -48,7 +48,6 @@ abstract class Proxy
       }
     }
     return $return;
-    return [];
   }
   protected function instantiate(): object
   {
