@@ -9,15 +9,13 @@
   ],
   "autoload": {
     "psr-4": {
-      "DHP\\kaerna\\": "kaerna",
-      "DHP\\modules\\": "modules",
       "DHP\\components\\": "components"
     }
   },
   "require": {
     "ext-json": "*",
-    "symfony/yaml": "^4.1",
-    "phpunit/phpunit": "9.5"
+    "symfony/yaml": "*",
+    "phpunit/phpunit": "*"
   },
   "require-dev": {}
 }
