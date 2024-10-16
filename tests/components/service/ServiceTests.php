@@ -34,6 +34,14 @@ class ServiceTests extends TestCase
         echo \$one;
       } 
     }
+
+    class loadWithoutPrepare{
+        public function __construct(flaska \$flaska, private string \$val=""){
+        }
+        public function print(){
+          echo \$this->val;
+      }
+      }
 PELLE;
       eval($eval);
     }
@@ -76,5 +84,12 @@ PELLE;
     $service->prepare('app\services\complicated')
       ->withArgs(mess: ' and this is the new mess value')
       ->load();
+  }
+  public function testServiceNoPrepare()
+  {
+    $service = new Service();
+    $this->expectOutputString('default messagethis is plusand this');
+    $obj = $service->prepare('app\services\loadWithoutPrepare')->withArgs(val: 'and this')->load();
+    $obj->print();
   }
 }
