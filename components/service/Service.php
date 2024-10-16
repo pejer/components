@@ -16,19 +16,20 @@ class Service
     };
   }
 
-  public function extractScope()
-  {
-    return clone $this->scope_storage;
-  }
-
   public function clone()
   {
     return clone $this;
   }
 
-  public function load(string $class, ...$args)
+  // TODO: Handle args provided
+  public function load(string $class)
   {
-    return $this->scope_storage->get($class)();
+    $obj = $this->scope_storage->get($class);
+    if ($obj == STATE::NOT_SET && \class_exists($class)) {
+      $this->addSingleton($class);
+      $obj = $this->scope_storage->get($class);
+    }
+    return $obj();
   }
 
   public function addSingleton(mixed $object, ?string $alias = null, array ...$args)

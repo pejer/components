@@ -47,6 +47,10 @@ class Scope
    */
   public function get(string $alias): mixed
   {
+    $key = $this->aliases[$alias] ?? STATE::NOT_SET;
+    if ($key == STATE::NOT_SET) {
+      return $key;
+    }
     return $this->storage[$this->aliases[$alias]] ?? STATE::NOT_SET;
   }
 }

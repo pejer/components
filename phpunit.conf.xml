@@ -1,32 +1,29 @@
-<phpunit
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
-        bootstrap="tests/bootstrap_test.php"
-        colors="true">
-    <!-- mapTestClassNameToCoveredClassName="false"
-     cacheTokens="false"
-    colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    forceCoversAnnotation="false"
-
-    backupGlobals="true"
-    backupStaticAttributes="false"
-    printerFile="/path/to/ResultPrinter.php"
-    processIsolation="false"
-    stopOnError="false"
-    stopOnFailure="false"
-    stopOnIncomplete="false"
-    stopOnSkipped="false"
-    stopOnRisky="false"
-    timeoutForSmallTests="1"
-    timeoutForMediumTests="10"
-    timeoutForLargeTests="60"
-    verbose="false"> -->
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">components</directory>
-        </whitelist>
-    </filter>
+<?xml version="1.0"?>
+<phpunit 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.4/phpunit.xsd" 
+  bootstrap="tests/bootstrap_test.php" 
+  colors="true" 
+  displayDetailsOnIncompleteTests="true" 
+  displayDetailsOnSkippedTests="true" 
+  displayDetailsOnTestsThatTriggerDeprecations="true" 
+  displayDetailsOnPhpunitDeprecations="true">
+  <source>
+    <include>
+      <directory suffix=".php">components</directory>
+    </include>
+  </source>
+  <testsuites>
+    <testsuite name="service">
+      <directory suffix=".php">tests/components/service/</directory>
+    </testsuite>
+  </testsuites>
+  <coverage pathCoverage="true" ignoreDeprecatedCodeUnits="true" disableCodeCoverageIgnore="true">
+    <report>
+      <html outputDirectory="html-coverage" lowUpperBound="50" highLowerBound="90"/>
+    </report>
+  </coverage>
+  <php>
+    <ini name="memory_limit" value="512M"/>
+  </php>
 </phpunit>

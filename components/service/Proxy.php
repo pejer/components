@@ -13,7 +13,7 @@ abstract class Proxy
     $this->args = $args;
   }
 
-  protected function getConstructor(): \ReflectionMethod
+  protected function getConstructor(): ?\ReflectionMethod
   {
     return (new \ReflectionClass($this->class))->getConstructor();
   }
@@ -52,7 +52,8 @@ abstract class Proxy
   }
   protected function instantiate(): object
   {
-    $args = $this->buildArguments($this->getConstructor());
+    $constructor = $this->getConstructor();
+    $args = $constructor != null ? $this->buildArguments($constructor) : [];
     return new ($this->class)(...$args);
   }
 }
