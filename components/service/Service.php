@@ -17,7 +17,7 @@ class Service
     };
   }
 
-  public function prepareSingleton(string $class): self
+  public function prepare(string $class): self
   {
     if ($this->prepareObject != null) {
       $this->store();
@@ -28,6 +28,12 @@ class Service
       'args'    => [],
       'aliases' => []
     ];
+    return $this;
+  }
+
+  public function asTransient(): self
+  {
+    $this->prepareObject['type'] = 'transient';
     return $this;
   }
 
@@ -67,10 +73,10 @@ class Service
   // TODO: Handle args provided
   public function load(string $class = null, ?array $args = null)
   {
-    // if ($class == null && $this->prepareObject != null) {
-    //   $class = $this->prepareObject['class'];
-    //   $this->store();
-    // }
+    if ($class == null && $this->prepareObject != null) {
+      $class = $this->prepareObject['class'];
+      $this->store();
+    }
     $obj = $this->scope_storage->get($class);
     if ($obj == STATE::NOT_SET && \class_exists($class)) {
       $this->addSingleton($class, [], $args);

@@ -43,14 +43,14 @@ PELLE;
   {
     $service = new Service();
     $this->expectOutputString("herre - its working new message herre - its working new message");
-    $service->prepareSingleton('app\services\testing')
+    $service->prepare('app\services\testing')
       ->withArgs(plus: 'new message ', mess: "herre - its working ")
       ->store();
     $obj = $service->load('app\services\testing');
     $this->assertEquals('app\services\testing', get_class($obj));
 
     $serviceTwo = new Service();
-    $serviceTwo->prepareSingleton('app\services\testing')
+    $serviceTwo->prepare('app\services\testing')
       ->withArgs("herre - its working ", "new message")
       ->store();
     $obj = $serviceTwo->load('app\services\testing');
@@ -60,12 +60,21 @@ PELLE;
   {
     $service = new Service();
     $this->expectOutputString("default messagethis is plus this is what we want to see");
-    $service->prepareSingleton('app\services\complicated')
+    $service->prepare('app\services\complicated')
       ->withArgs(mess: 'should not see this')
       ->store();
     $objone = $service->load('app\services\complicated', [null, ' this is what we want to see']);
     $objtwo = $service->load('app\services\complicated', [null, ' this will never show']);
     $this->assertEquals('app\services\complicated', get_class($objone));
     $this->assertEquals(spl_object_hash($objone), spl_object_hash($objtwo));
+  }
+
+  public function testServiceSomeMoah()
+  {
+    $service = new Service();
+    $this->expectOutputString('default messagethis is plus and this is the new mess value');
+    $service->prepare('app\services\complicated')
+      ->withArgs(mess: ' and this is the new mess value')
+      ->load();
   }
 }
