@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DHP\components\service;
 
+
+/** @package DHP\components\service */
 class Service
 {
   private Scope $scope_storage;

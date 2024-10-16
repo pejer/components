@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DHP\components\service;
 
+/** @package DHP\components\service */
 class Singleton extends Proxy
 {
   public function __invoke(?array $args = null): object

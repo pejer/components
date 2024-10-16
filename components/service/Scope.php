@@ -10,6 +10,7 @@ enum STATE
   case ERROR;
 }
 
+/** @package DHP\components\service */
 class Scope
 {
 

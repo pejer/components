@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DHP\components\service;
 
+/** @package DHP\components\service */
 abstract class Proxy
 {
   protected $args;
