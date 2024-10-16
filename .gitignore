@@ -3,3 +3,6 @@ vendor
 .DS_Store
 html-coverage
 .phpunit.result.cache
+docs
+tools
+.phpdoc
