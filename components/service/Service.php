@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DHP\components\service;
 
-
+// TODO: Improve naming & aliasing of things!
 /** @package DHP\components\service */
 class Service
 {
@@ -102,14 +102,11 @@ class Service
       "singleton" => new Singleton($this, $object, $args),
       "transient" => new Transient($this, $object, $args)
     };
-    $aliases = [];
-    if (!empty($alias)) {
-      $aliases[] = $alias;
-    }
+    $aliases = $alias;
     foreach ($this->getAliases($object) as $alias) {
       $aliases[] = $alias;
     }
-    $this->scope_storage->store($proxy, $aliases);
+    $this->scope_storage->store($proxy, $object, $aliases);
   }
   private function getAliases(string|object $id)
   {

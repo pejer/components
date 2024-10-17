@@ -4,11 +4,21 @@ declare(strict_types=1);
 
 namespace DHP\components\service;
 
+use ReflectionMethod;
+use ReflectionException;
+
 /** @package DHP\components\service */
 abstract class Proxy
 {
-  protected $args;
-  protected $obj;
+  /** @var mixed[] */
+  protected array $args = [];
+  protected mixed $obj;
+  /**
+   * @param Service $service 
+   * @param class-string $class 
+   * @param mixed[] $args 
+   * @return void 
+   */
   public function __construct(private Service $service, private string $class, ?array $args = [])
   {
     $this->args = empty($args) ? [] : $args;
@@ -18,6 +28,11 @@ abstract class Proxy
   {
     return (new \ReflectionClass($this->class))->getConstructor();
   }
+  /**
+   * @param ReflectionMethod $constructor 
+   * @return array 
+   * @throws ReflectionException 
+   */
   protected function buildArguments(\ReflectionMethod $constructor): array
   {
     $return = [];
