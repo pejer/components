@@ -15,41 +15,32 @@ class Scope
 {
 
   private array $storage = [];
-  private array $aliases = [];
 
   /**
    * @param mixed $object 
    * @param string $name
-   * @param array<string> $aliases 
    * @return void 
    */
-  public function store(mixed $object, string $name, array $aliases = [])
+  public function store(string $name, mixed $object)
   {
     $this->storage[$name] = $object;
-    foreach ($aliases as $alias) {
-      $this->aliases[$alias] = $name;
-    }
   }
 
   /**
-   * @param string $alias 
+   * @param string $name 
    * @param string $object 
    * @return void 
    */
-  public function replace(string $alias, string $object)
+  public function replace(string $name, string $object)
   {
-    $this->storage[$this->aliases[$alias]] = $object;
+    $this->storage[$name] = $object;
   }
   /**
-   * @param string $alias 
+   * @param string $name 
    * @return mixed 
    */
-  public function get(string $alias): mixed
+  public function get(string $name): mixed
   {
-    $key = $this->aliases[$alias] ?? STATE::NOT_SET;
-    if ($key == STATE::NOT_SET) {
-      return $key;
-    }
-    return $this->storage[$this->aliases[$alias]] ?? STATE::NOT_SET;
+    return $this->storage[$name] ?? STATE::NOT_SET;
   }
 }

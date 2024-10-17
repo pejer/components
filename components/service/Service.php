@@ -106,7 +106,7 @@ class Service
     foreach ($this->getAliases($object) as $alias) {
       $aliases[] = $alias;
     }
-    $this->scope_storage->store($proxy, $object, $aliases);
+    $this->scope_storage->store($object, $proxy);
   }
   private function getAliases(string|object $id)
   {
