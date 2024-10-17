@@ -54,14 +54,14 @@ PELLE;
     $service->prepare('app\services\testing')
       ->withArgs(plus: 'new message ', mess: "herre - its working ")
       ->store();
-    $obj = $service->load('app\services\testing');
+    $obj = $service->get('app\services\testing');
     $this->assertEquals('app\services\testing', get_class($obj));
 
     $serviceTwo = new Service();
     $serviceTwo->prepare('app\services\testing')
       ->withArgs("herre - its working ", "new message")
       ->store();
-    $obj = $serviceTwo->load('app\services\testing');
+    $obj = $serviceTwo->get('app\services\testing');
   }
 
   public function testService()
@@ -71,8 +71,8 @@ PELLE;
     $service->prepare('app\services\complicated')
       ->withArgs(mess: 'should not see this')
       ->store();
-    $objone = $service->load('app\services\complicated', [null, ' this is what we want to see']);
-    $objtwo = $service->load('app\services\complicated', [null, ' this will never show']);
+    $objone = $service->get('app\services\complicated', [null, ' this is what we want to see']);
+    $objtwo = $service->get('app\services\complicated', [null, ' this will never show']);
     $this->assertEquals('app\services\complicated', get_class($objone));
     $this->assertEquals(spl_object_hash($objone), spl_object_hash($objtwo));
   }
@@ -83,13 +83,13 @@ PELLE;
     $this->expectOutputString('default messagethis is plus and this is the new mess value');
     $service->prepare('app\services\complicated')
       ->withArgs(mess: ' and this is the new mess value')
-      ->load();
+      ->get();
   }
   public function testServiceNoPrepare()
   {
     $service = new Service();
     $this->expectOutputString('default messagethis is plusand this');
-    $obj = $service->prepare('app\services\loadWithoutPrepare')->withArgs(val: 'and this')->load();
+    $obj = $service->prepare('app\services\loadWithoutPrepare')->withArgs(val: 'and this')->get();
     $obj->print();
   }
 }

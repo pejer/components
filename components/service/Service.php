@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DHP\components\service;
 
-// TODO: Improve naming & aliasing of things!
 /** @package DHP\components\service */
 class Service
 {
@@ -45,12 +44,6 @@ class Service
     return $this;
   }
 
-  public function withAliases(array $aliases): self
-  {
-    $this->prepareObject['aliases'] = $aliases;
-    return $this;
-  }
-
   public function store(): bool
   {
     $this->add(
@@ -63,17 +56,13 @@ class Service
     return true;
   }
 
-  // $service->prepareSingleton()->withArgs()->withAliases();
-
-
-
   public function clone()
   {
     return clone $this;
   }
 
   // TODO: Handle args provided
-  public function load(string $class = null, ?array $args = null)
+  public function get(string $class = null, ?array $args = null)
   {
     if ($class == null && $this->prepareObject != null) {
       $class = $this->prepareObject['class'];

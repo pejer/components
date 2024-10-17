@@ -14,7 +14,7 @@ enum STATE
 class Scope
 {
 
-  private array $storage = [];
+  protected array $storage = [];
 
   /**
    * @param mixed $object 

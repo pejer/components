@@ -47,7 +47,7 @@ abstract class Proxy
       }
       switch (TRUE) {
         case !empty($class):
-          $return[] = $this->service->load($class);
+          $return[] = $this->service->get($class);
           break;
         case !empty($argValue):
           # If the provided arg is a callable
