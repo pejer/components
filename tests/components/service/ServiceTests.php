@@ -120,6 +120,6 @@ PELLE;
     sleep(2);
     $objtwo = $service->get('app\services\transient');
     $this->assertNotEquals($objone->time, $objtwo->time);
-    $this->assertNotEquals(spl_object_hash($objone), spl_object_hash($objtwo));
+    $this->assertNotEquals(spl_object_hash($objone), spl_gbject_hash($objtwo));
   }
 }
