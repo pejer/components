@@ -16,5 +16,8 @@ $service->prepare('DHP\components\FluidTransient')
 $service->prepare('DHP\components\Fluid')
   ->asTransient()
   ->store();
+
+var_dump($service->get('DHP\components\Fluid'));
+var_dump($service->get('DHP\components\FluidTransient'));
 var_dump(memory_get_peak_usage(true) / 1024 / 1024 . ' MB');
 var_dump(memory_get_usage() / 1024 / 1024 . ' MB');

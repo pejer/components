@@ -42,6 +42,12 @@ class ServiceTests extends TestCase
           echo \$this->val;
       }
       }
+      class transient{
+        public \$time = null;
+      public function __construct(){
+        \$this->time = time(); 
+      }
+      }
 PELLE;
       eval($eval);
     }
@@ -50,12 +56,23 @@ PELLE;
   public function testServiceController()
   {
     $service = new Service();
-    $this->expectOutputString("herre - its working new message herre - its working new message");
+    $this->expectOutputString("herre - its working new message testtest herre - its working new message");
     $service->prepare('app\services\testing')
       ->withArgs(plus: 'new message ', mess: "herre - its working ")
       ->store();
-    $obj = $service->get('app\services\testing');
+    $service->prepare('app\services\testing')
+      ->withArgs(plus: 'test ', mess: "test")
+      ->withAliases(['fest'])
+      ->store();
+    $service->prepare('app\services\flaska')
+      ->withArgs(plus: 'test ', mess: "test")
+      ->asTransient()
+      ->withAliases(['fest'])
+      ->store();
+    $obj  = $service->get('app\services\testing');
+    $obj2 = $service->get('fest');
     $this->assertEquals('app\services\testing', get_class($obj));
+    $this->assertEquals('app\services\testing', get_class($obj2));
 
     $serviceTwo = new Service();
     $serviceTwo->prepare('app\services\testing')
@@ -91,5 +108,18 @@ PELLE;
     $this->expectOutputString('default messagethis is plusand this');
     $obj = $service->prepare('app\services\loadWithoutPrepare')->withArgs(val: 'and this')->get();
     $obj->print();
+  }
+
+  public function testServiceTestTransient()
+  {
+    $service = new Service();
+    $service->prepare('app\services\transient')
+      ->asTransient()
+      ->store();
+    $objone = $service->get('app\services\transient');
+    sleep(2);
+    $objtwo = $service->get('app\services\transient');
+    $this->assertNotEquals($objone->time, $objtwo->time);
+    $this->assertNotEquals(spl_object_hash($objone), spl_object_hash($objtwo));
   }
 }

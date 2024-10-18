@@ -9,38 +9,44 @@ enum STATE
   case NOT_SET;
   case ERROR;
 }
-
 /** @package DHP\components\service */
 class Scope
 {
+  /** @var array<string> $aliases */
+  private array $aliases = [];
 
   protected array $storage = [];
-
-  /**
-   * @param mixed $object 
-   * @param string $name
-   * @return void 
-   */
-  public function store(string $name, mixed $object)
-  {
-    $this->storage[$name] = $object;
-  }
-
   /**
    * @param string $name 
-   * @param string $object 
+   * @param mixed $object 
+   * @param array<string> $aliases 
    * @return void 
    */
-  public function replace(string $name, string $object)
-  {
-    $this->storage[$name] = $object;
+  public function store(mixed $object, array $aliases = []) {
+    $this->storage[] = $object;
+    end($this->storage);
+    $key = key($this->storage);
+    // aliases - lets allow aliases to have arrays of things for an alias
+    // TODO: figure out how to handle aliases where there are several potential matches
+    foreach($aliases as $alias){
+      if (!isset($this->aliases[$alias])){
+        $this->aliases[$alias] = [];
+      }
+      $this->aliases[$alias][] = $key;
+    }
   }
+
   /**
    * @param string $name 
    * @return mixed 
    */
   public function get(string $name): mixed
   {
-    return $this->storage[$name] ?? STATE::NOT_SET;
+    $key = $this->aliases[$name] ?? STATE::NOT_SET;
+    if ($key == STATE::NOT_SET) {
+      return $key;
+    }
+    $key = $key[0];
+    return $this->storage[$key] ?? STATE::NOT_SET;
   }
 }

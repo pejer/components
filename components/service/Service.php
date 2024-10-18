@@ -27,7 +27,7 @@ class Service
       'type'    => 'singleton',
       'class'   => $class,
       'args'    => [],
-      'aliases' => []
+      'aliases' => [$class]
     ];
     return $this;
   }
@@ -35,6 +35,16 @@ class Service
   public function asTransient(): self
   {
     $this->prepareObject['type'] = 'transient';
+    return $this;
+  }
+
+  /**
+   * @param array<string> $aliases 
+   * @return Service 
+   */
+  public function withAliases(array $aliases): self
+  {
+    $this->prepareObject['aliases'] = array_merge($this->prepareObject['aliases'], $aliases);
     return $this;
   }
 
@@ -70,7 +80,7 @@ class Service
     }
     $obj = $this->scope_storage->get($class);
     if ($obj == STATE::NOT_SET && \class_exists($class)) {
-      $this->addSingleton($class, [], $args);
+      $this->addSingleton($class, [$class], $args);
       $obj = $this->scope_storage->get($class);
     }
     return $obj($args);
@@ -91,11 +101,10 @@ class Service
       "singleton" => new Singleton($this, $object, $args),
       "transient" => new Transient($this, $object, $args)
     };
-    $aliases = $alias;
-    foreach ($this->getAliases($object) as $alias) {
-      $aliases[] = $alias;
+    foreach($this->getAliases($object) as $extraAlias){
+      $alias[] = $extraAlias;
     }
-    $this->scope_storage->store($object, $proxy);
+    $this->scope_storage->store($proxy, $alias);
   }
   private function getAliases(string|object $id)
   {
